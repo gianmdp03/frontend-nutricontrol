@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { ServiceService } from "@/services/ServiceService";
 
-export type FormState = {
+export type ServiceFormState = {
   errors?: {
     name?: string[];
     description?: string[];
@@ -36,4 +36,7 @@ export async function updateServiceAction(id: string, data: ServiceFormValues) {
   } catch (error) {
     return { error: "Hubo un problema de conexión con el servidor" };
   }
+
+  revalidatePath("/admin/services");
+  redirect("/admin/services");
 }

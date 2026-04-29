@@ -1,10 +1,5 @@
-export interface ServiceRequestDTO {
+export interface ServiceDetailDTO {
+  id: string;
   name: string;
   description: string;
 }
-
-export interface ServiceDetailDTO extends ServiceRequestDTO {
-  id: string;
-}
-
-export type ServiceUpdateDTO = Partial<ServiceRequestDTO>;

@@ -1,15 +1,8 @@
-export interface ScheduleRuleRequestDTO {
-  dayOfWeek: DayOfWeek;
-  startTime: Date;
-  endTime: Date;
-}
+export type DayOfWeek = "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
 
-export interface ScheduleRuleDetailDTO extends ScheduleRuleRequestDTO {
+export interface ScheduleRuleDetailDTO {
   id: string;
-}
-
-export type ScheduleRuleUpdateDTO = Partial<ScheduleRuleRequestDTO>;
-
-enum DayOfWeek {
-  MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+  dayOfWeek: DayOfWeek;
+  startTime: string;
+  endTime: string;
 }

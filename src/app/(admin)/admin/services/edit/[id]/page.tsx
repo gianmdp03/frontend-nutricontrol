@@ -2,6 +2,7 @@
 import { updateServiceAction } from "@/actions/serviceActions";
 import ServiceForm from "@/components/admin/services/ServiceForm";
 import { ServiceFormValues } from "@/schemas/ServiceSchema";
+import { ServiceService } from "@/services/ServiceService";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -15,11 +16,12 @@ const EditServicePage = () => {
 
   useEffect(() => {
     const fetchCurrentData = async () => {
-      const response = await fetch(
-        `${process.env.API_URL}/services/${serviceId}`,
-      );
-      const data = await response.json();
-      setInitialData(data);
+      try {
+        const data = await ServiceService.getById(serviceId);
+        setInitialData(data);
+      } catch (error) {
+        console.error("Error al cargar el servicio:", error);
+      }
     };
     fetchCurrentData();
   }, [serviceId]);

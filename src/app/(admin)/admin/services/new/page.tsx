@@ -5,7 +5,10 @@ import { ServiceFormValues } from "@/schemas/ServiceSchema";
 
 const NewServicePage = () => {
   const onSubmitCreate = async (data: ServiceFormValues) => {
-    await createServiceAction(data);
+    const result = await createServiceAction(data);
+    if (result?.error) {
+      alert(result.error);
+    }
   };
 
   return (

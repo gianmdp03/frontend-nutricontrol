@@ -44,6 +44,9 @@ export default function Navbar() {
         <Link href="#about" className="hover:text-rose-500">
           Sobre la doctora
         </Link>
+        <Link href="/admin" className="hover:text-rose-500">
+          Administrador
+        </Link>
       </div>
 
       <button className="bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-md font-medium text-sm flex items-center gap-2 transition">

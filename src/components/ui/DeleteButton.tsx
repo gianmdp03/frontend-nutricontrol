@@ -5,13 +5,14 @@ type Props = {
   children: ReactNode;
   action: (id: string) => Promise<void>;
   id: string;
+  name: string;
 };
 
-const DeleteButton = ({ children, action, id }: Props) => {
+const DeleteButton = ({ children, action, id, name}: Props) => {
   return (
     <button
       onClick={() => {
-        if (confirm("Estas seguro de que deseas eliminar este servicio?")) {
+        if (confirm(`Estas seguro de que deseas eliminar este ${name}?`)) {
           action(id);
         }
       }}

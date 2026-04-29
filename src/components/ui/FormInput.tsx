@@ -5,13 +5,15 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
   registration: UseFormRegisterReturn;
+  type?:string;
 }
 
-const FormInput = ({ label, error, registration, ...props }: Props) => {
+const FormInput = ({ label, error, registration, type, ...props }: Props) => {
   return (
     <div className="w-full mb-4">
       <label className="block text-sm font-medium mb-1">{label}</label>
       <input
+        type={type}
         {...registration}
         {...props}
         className={`w-full border rounded-md p-2 transition-colors ${
