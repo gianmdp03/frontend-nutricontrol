@@ -1,4 +1,4 @@
-import ScrollAnimation from "@/components/ScrollAnimation";
+import ScrollAnimation from "@/components/ui/ScrollAnimation";
 import ServiceCard from "@/components/ServiceCard";
 import { getServices } from "@/services/ServiceService";
 
@@ -20,8 +20,15 @@ const Services = async () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service) => (
-            <ServiceCard key={service.id} name={service.name} description={service.description}>
-              <a href="#" className="text-rose-500 text-sm font-medium hover:underline">
+            <ServiceCard
+              key={service.id}
+              name={service.name}
+              description={service.description}
+            >
+              <a
+                href="#"
+                className="text-rose-500 text-sm font-medium hover:underline"
+              >
                 Ver detalles →
               </a>
             </ServiceCard>

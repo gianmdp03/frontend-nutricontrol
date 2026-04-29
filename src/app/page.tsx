@@ -1,11 +1,11 @@
-import BackgroundGlow from "@/components/BackgroundGlow";
-import About from "./_components/About";
-import Consultation from "./_components/Consultation";
-import ConsultationInfo from "./_components/ConsultationInfo";
-import Hero from "./_components/Hero";
-import Services from "./_components/Services";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import BackgroundGlow from "@/components/ui/BackgroundGlow";
+import About from "../components/landing/About";
+import Consultation from "../components/landing/Consultation";
+import ConsultationInfo from "../components/landing/ConsultationInfo";
+import Hero from "../components/landing/Hero";
+import Services from "../components/landing/Services";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   return (

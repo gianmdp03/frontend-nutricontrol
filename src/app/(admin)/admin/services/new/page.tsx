@@ -1,7 +1,5 @@
-import ServiceForm from "../_components/ServiceForm";
-
 const page = () => {
-  return <ServiceForm />;
+  return <div />;
 };
 
 export default page;

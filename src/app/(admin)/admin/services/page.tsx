@@ -1,7 +1,7 @@
 import ServiceCard from "@/components/ServiceCard";
 import { deleteService, getServices } from "@/services/ServiceService";
-import DeleteButton from "./_components/DeleteButton";
-import { deleteServiceAction } from "./action";
+import DeleteButton from "../../../../components/admin/services/DeleteButton";
+import { deleteServiceAction } from "../../../../actions/serviceActions";
 import Link from "next/link";
 
 interface Props {}

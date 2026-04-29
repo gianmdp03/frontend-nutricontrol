@@ -1,4 +1,4 @@
-import ScrollAnimation from "@/components/ScrollAnimation";
+import ScrollAnimation from "@/components/ui/ScrollAnimation";
 
 const About = () => {
   return (
