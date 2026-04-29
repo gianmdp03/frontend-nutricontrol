@@ -1,13 +1,14 @@
-import ServiceCard from "@/components/ServiceCard";
-import { deleteService, getServices } from "@/services/ServiceService";
+import ServiceCard from "@/components/ui/ServiceCard";
 import DeleteButton from "../../../../components/admin/services/DeleteButton";
 import { deleteServiceAction } from "../../../../actions/serviceActions";
 import Link from "next/link";
+import { ServiceService } from "@/services/ServiceService";
+import { ServiceDetailDTO } from "@/types/Service";
 
 interface Props {}
 
-const page = async () => {
-  const data = await getServices();
+const ServicesPage = async () => {
+  const data: ServiceDetailDTO[] = await ServiceService.get();
   return (
     <div className="grid-cols-3">
       <Link href={"/admin/services/new"}>Crear nuevo servicio</Link>
@@ -32,4 +33,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default ServicesPage;

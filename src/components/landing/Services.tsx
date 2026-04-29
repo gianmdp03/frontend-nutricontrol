@@ -1,9 +1,9 @@
 import ScrollAnimation from "@/components/ui/ScrollAnimation";
-import ServiceCard from "@/components/ServiceCard";
-import { getServices } from "@/services/ServiceService";
-
+import ServiceCard from "@/components/ui/ServiceCard";
+import { ServiceService } from "@/services/ServiceService";
+import { ServiceDetailDTO } from "@/types/Service";
 const Services = async () => {
-  const services = await getServices();
+  const services:ServiceDetailDTO[] = await ServiceService.get();
 
   return (
     <ScrollAnimation>
