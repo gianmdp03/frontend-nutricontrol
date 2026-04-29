@@ -22,13 +22,9 @@ export default function RootLayout({
       <body
         className={`${inter.className} bg-white text-gray-800 min-h-screen flex flex-col`}
       >
-        <Navbar />
         {/* Esto es lo que cambia en cada página */}
-        <main className="grow">
-          {children}
-          <ScrollToTop />
-        </main>
-        <Footer />
+        {children}
+        <ScrollToTop />
       </body>
     </html>
   );
