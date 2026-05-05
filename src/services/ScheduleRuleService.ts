@@ -42,7 +42,6 @@ export const ScheduleRuleService = {
   getById: async (id: string): Promise<ScheduleRuleDetailDTO> => {
     const response = await fetch(`${API_URL}/schedule-rules/${id}`);
     if (!response.ok) throw new Error("Error al obtener los horarios");
-    const data = await response.json();
-    return data;
+    return response.json();
   },
 };

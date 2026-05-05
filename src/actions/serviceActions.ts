@@ -5,14 +5,6 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { ServiceService } from "@/services/ServiceService";
 
-export type ServiceFormState = {
-  errors?: {
-    name?: string[];
-    description?: string[];
-  };
-  message?: string | null;
-  success?: boolean;
-};
 
 export async function deleteServiceAction(id: string) {
   await ServiceService.delete(id);

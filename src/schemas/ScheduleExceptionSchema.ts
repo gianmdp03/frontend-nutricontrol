@@ -1,18 +1,20 @@
-import z from "zod";
+import * as z from "zod/mini";
 
 export const scheduleExceptionSchema = z.object({
-  localDate: z
+  date: z
     .string()
-    .check(z.regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido"))
-    .refine(
-      (val) => {
-        const select = new Date(val);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+    .check(
+      z.regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido"),
+      z.refine(
+        (val) => {
+          const select = new Date(val);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
 
-        return select >= today;
-      },
-      { message: "La fecha no puede ser anterior a hoy" },
+          return select >= today;
+        },
+        { message: "La fecha no puede ser anterior a hoy" },
+      ),
     ),
   startTime: z
     .string()
@@ -30,10 +32,7 @@ export const scheduleExceptionSchema = z.object({
         "El horario debe ser válido (HH:mm)",
       ),
     ),
-  reason: z.preprocess(
-    (val) => (val === "" ? undefined : val),
-    z.string().optional(),
-  ),
+  reason: z.optional(z.string()),
 });
 
 export type ScheduleExceptionFormValues = z.infer<

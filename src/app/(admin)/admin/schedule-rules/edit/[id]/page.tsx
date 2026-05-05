@@ -32,7 +32,7 @@ const EditScheduleRulePage = () => {
   };
 
   if (!initialData)
-    return <p className="p-8">Cargando datos de los dias de trabajo...</p>;
+    return <p className="p-8">Cargando datos del día de trabajo...</p>;
 
   return (
     <div className="p-8">

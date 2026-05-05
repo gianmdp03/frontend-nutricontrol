@@ -16,7 +16,13 @@ export default function AdminLayout({ children }: Props) {
             href="/admin/schedule-rules"
             className="block hover:text-rose-300"
           >
-            Gestionar días y horarios
+            Gestionar días de trabajo
+          </Link>
+          <Link
+            href="/admin/schedule-exceptions"
+            className="block hover:text-rose-300"
+          >
+            Gestionar excepciones
           </Link>
           <hr className="border-slate-700" />
           <Link

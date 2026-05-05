@@ -2,7 +2,6 @@ import { deleteScheduleRuleAction } from "@/actions/scheduleRuleActions";
 import DeleteButton from "@/components/ui/DeleteButton";
 import ScheduleRuleCard from "@/components/ui/ScheduleRuleCard";
 import { ScheduleRuleService } from "@/services/ScheduleRuleService";
-import { daysTranslation } from "@/utils/dictionaries";
 import Link from "next/link";
 
 const ScheduleRulesPage = async () => {

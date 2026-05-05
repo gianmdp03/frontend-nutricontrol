@@ -1,0 +1,33 @@
+// Ajustá la ruta a donde guardaste el form
+import AppointmentBooking from "@/components/ui/AppointmentBooking";
+import { AppointmentService } from "@/services/AppointmentService";
+
+export default async function BookingPage() {
+  // 1. Llamás a tu endpoint directo desde el servidor
+  // Next.js hace la petición a Spring Boot antes de mandarle el HTML al usuario
+  const availableSlots = await AppointmentService.getAvailableAppointments();
+
+  // 2. Definís la lista de médicos (por ahora hardcodeada con una sola opción como dijiste)
+  const doctorsList = [
+    { value: "1", label: "Dra. Zully" }, // Asegurate de que el 'value' coincida con el ID real de la base de datos
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto mb-8 text-center">
+        <h1 className="text-3xl font-extrabold text-gray-900">
+          Reservar Turno
+        </h1>
+        <p className="mt-2 text-gray-600">
+          Seleccioná un profesional y elegí tu horario.
+        </p>
+      </div>
+
+      {/* 3. Le inyectás la data al formulario */}
+      <AppointmentBooking
+        doctorsList={doctorsList}
+        availableSlots={availableSlots}
+      />
+    </div>
+  );
+}

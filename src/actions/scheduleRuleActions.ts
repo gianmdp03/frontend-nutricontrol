@@ -5,16 +5,6 @@ import { ScheduleRuleService } from "@/services/ScheduleRuleService";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export type ScheduleRuleFormState = {
-  errors?: {
-    dayOfWeek?: string[];
-    startTime?: string[];
-    endTime?: string[];
-  };
-  message?: string | null;
-  success?: boolean;
-};
-
 export async function deleteScheduleRuleAction(id: string) {
   await ScheduleRuleService.delete(id);
   revalidatePath("/admin/schedule-rules");
