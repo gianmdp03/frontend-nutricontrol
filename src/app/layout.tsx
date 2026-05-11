@@ -18,9 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <body
         className={`${inter.className} bg-white text-gray-800 min-h-screen flex flex-col`}
+        suppressHydrationWarning
       >
         {/* Esto es lo que cambia en cada página */}
         {children}

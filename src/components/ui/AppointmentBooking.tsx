@@ -7,17 +7,23 @@ import {
   AppointmentFormValues,
 } from "@/schemas/AppointmentSchema";
 import FormSelect from "@/components/ui/FormSelect";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { AppointmentSlot } from "@/services/AppointmentService";
 
 interface Props {
   doctorsList: { value: string; label: string }[];
-  availableSlots: Record<string, string[]>;
+  availableSlots: AppointmentSlot[];
 }
 
 export default function AppointmentBooking({
   doctorsList,
   availableSlots,
 }: Props) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const {
     register,
     handleSubmit,
@@ -40,7 +46,45 @@ export default function AppointmentBooking({
     setValue("startTime", "");
   }, [selectedAdmin, setValue]);
 
-  const daysList = Object.entries(availableSlots);
+  // Filtramos por el administrador seleccionado
+  const filteredSlots = availableSlots.filter(
+    (slot) => slot.adminId.toString() === selectedAdmin
+  );
+
+  // Agrupamos por fecha convirtiendo el UTC a la hora local del dispositivo
+  const groupedSlots = filteredSlots.reduce((acc, slot) => {
+    // Convertimos el string UTC a un objeto Date (que automáticamente lo adapta a la zona local)
+    const dateObj = new Date(slot.startTimeUTC);
+
+    // Extraemos la fecha en la zona horaria del dispositivo (YYYY-MM-DD)
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const day = String(dateObj.getDate()).padStart(2, "0");
+    const localDateStr = `${year}-${month}-${day}`;
+
+    // Extraemos la hora en la zona horaria del dispositivo (HH:mm)
+    const hours = String(dateObj.getHours()).padStart(2, "0");
+    const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+    const localTimeStr = `${hours}:${minutes}`;
+
+    if (!acc[localDateStr]) {
+      acc[localDateStr] = [];
+    }
+    if (!acc[localDateStr].includes(localTimeStr)) {
+      acc[localDateStr].push(localTimeStr);
+    }
+    return acc;
+  }, {} as Record<string, string[]>);
+
+  // Obtenemos los días ordenados
+  const daysList = Object.entries(groupedSlots).sort(([dateA], [dateB]) =>
+    dateA.localeCompare(dateB)
+  );
+
+  // Ordenamos los horarios de cada día
+  daysList.forEach(([_, times]) => {
+    times.sort();
+  });
 
   const onSubmit = async (data: AppointmentFormValues) => {
     console.log("Enviando turno a Spring Boot (sin auth):", data);
@@ -66,7 +110,7 @@ export default function AppointmentBooking({
       </div>
 
       {/* 2. SECCIÓN: Elegir Horario */}
-      {selectedAdmin && (
+      {mounted && selectedAdmin && (
         <div className="animate-in fade-in duration-300">
           <h2 className="text-xl font-bold text-gray-900 mb-4 border-b pb-2">
             2. Horario disponible
