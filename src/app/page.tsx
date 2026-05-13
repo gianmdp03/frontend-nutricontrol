@@ -4,13 +4,13 @@ import Consultation from "../components/landing/Consultation";
 import ConsultationInfo from "../components/landing/ConsultationInfo";
 import Hero from "../components/landing/Hero";
 import Services from "../components/landing/Services";
-import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import ScrollToTop from "@/components/ui/ScrollToTop";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen overflow-hidden grow">
-      <Navbar />
+    <>
+      <ScrollToTop />
       <BackgroundGlow />
       <Hero />
       <Services />
@@ -18,6 +18,6 @@ export default function Home() {
       <Consultation />
       <About />
       <Footer />
-    </main>
+    </>
   );
 }

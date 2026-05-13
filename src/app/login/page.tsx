@@ -5,23 +5,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-
-// 1. Definimos el esquema de validación con Zod
-const loginSchema = z.object({
-  email: z.string().email("Introduce un correo electrónico válido"),
-  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
-});
-
-// Extraemos el tipo del esquema
-type LoginFormValues = z.infer<typeof loginSchema>;
+import { LoginFormValues, loginSchema } from "@/schemas/LoginSchema";
 
 export default function LoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  // 2. Inicializamos React Hook Form
   const {
     register,
     handleSubmit,
@@ -44,7 +34,7 @@ export default function LoginPage() {
       setError("Credenciales inválidas. Revisa tu email y contraseña.");
       setIsLoading(false);
     } else {
-      router.push("/dashboard");
+      router.push("/");
       router.refresh();
     }
   };
@@ -61,13 +51,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form
-          className="mt-8 space-y-6"
-          onSubmit={handleSubmit(
-            (data) => console.log("✅ Formulario válido, enviando:", data),
-            (errors) => console.log("❌ Error de validación en Zod:", errors),
-          )}
-        >
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           {error && (
             <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm text-center border border-red-200">
               {error}
@@ -131,7 +115,7 @@ export default function LoginPage() {
         </div>
 
         <button
-          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+          onClick={() => signIn("google", { callbackUrl: "/" })}
           className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all active:scale-[0.98]"
         >
           <img

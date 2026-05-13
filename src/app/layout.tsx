@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css"; // Acá van tus directivas de Tailwind
 import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import ScrollToTop from "@/components/ui/ScrollToTop";
+import { Providers } from "@/components/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,14 +17,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning data-scroll-behavior="smooth">
       <body
         className={`${inter.className} bg-white text-gray-800 min-h-screen flex flex-col`}
         suppressHydrationWarning
       >
-        {/* Esto es lo que cambia en cada página */}
-        {children}
-        <ScrollToTop />
+        <Providers>
+          <Navbar />
+          <main className="relative min-h-screen overflow-hidden grow">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );
