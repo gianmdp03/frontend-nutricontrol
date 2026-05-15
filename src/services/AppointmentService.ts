@@ -1,3 +1,4 @@
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
 export interface AppointmentSlot {
@@ -7,10 +8,35 @@ export interface AppointmentSlot {
 }
 
 export const AppointmentService = {
-  getAvailableAppointments: async (): Promise<AppointmentSlot[]> => {
-    const response = await fetch(`${API_URL}/appointments/available`);
+  getAvailableAppointments: async (
+    token: string,
+  ): Promise<AppointmentSlot[]> => {
+    const response = await fetch(`${API_URL}/appointments/available`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!response.ok) throw new Error("Error al obtener los turnos");
     const data = await response.json();
     return data || [];
+  },
+  createAppointment: async (
+    data: { startTime: string; adminId: string },
+    token: string,
+  ): Promise<{ paypalOrderId: string; approveLink: string }> => {
+    const response = await fetch(`${API_URL}/appointments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al crear el turno");
+    }
+
+    return await response.json();
   },
 };

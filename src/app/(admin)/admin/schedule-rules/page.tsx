@@ -1,11 +1,18 @@
 import { deleteScheduleRuleAction } from "@/actions/scheduleRuleActions";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import DeleteButton from "@/components/ui/DeleteButton";
 import ScheduleRuleCard from "@/components/ui/ScheduleRuleCard";
 import { ScheduleRuleService } from "@/services/ScheduleRuleService";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
 
 const ScheduleRulesPage = async () => {
-  const data = await ScheduleRuleService.get();
+  const token = (await getServerSession(authOptions))?.user?.backendToken;
+  if (!token) {
+    return <p>Debes iniciar sesión para continuar</p>;
+  }
+
+  const data = await ScheduleRuleService.get(token);
   return (
     <div>
       <h2 className="text-2xl font-bold">Dias de trabajo</h2>
@@ -27,8 +34,9 @@ const ScheduleRulesPage = async () => {
               <div className="[&>button]:text-sm [&>button]:font-medium [&>button]:text-red-600 [&>button]:bg-red-50 hover:[&>button]:bg-red-100 [&>button]:px-3 [&>button]:py-1.5 [&>button]:rounded-md [&>button]:transition-colors">
                 <DeleteButton
                   action={deleteScheduleRuleAction}
-                  id={scheduleRule.id}
                   name="día"
+                  id={scheduleRule.id}
+                  token={token}
                 >
                   Eliminar
                 </DeleteButton>

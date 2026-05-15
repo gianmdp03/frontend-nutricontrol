@@ -1,11 +1,18 @@
-// Ajustá la ruta a donde guardaste el form
 import AppointmentBooking from "@/components/ui/AppointmentBooking";
 import { AppointmentService } from "@/services/AppointmentService";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function BookingPage() {
+  const session = await getServerSession(authOptions);
+  const token = session?.user?.backendToken;
+  if (!token) {
+    throw new Error("Debes iniciar sesión para confirmar el turno.");
+  }
   // 1. Llamás a tu endpoint directo desde el servidor
   // Next.js hace la petición a Spring Boot antes de mandarle el HTML al usuario
-  const availableSlots = await AppointmentService.getAvailableAppointments();
+  const availableSlots =
+    await AppointmentService.getAvailableAppointments(token);
 
   // 2. Definís la lista de médicos (por ahora hardcodeada con una sola opción como dijiste)
   const doctorsList = [

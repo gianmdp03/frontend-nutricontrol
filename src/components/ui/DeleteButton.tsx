@@ -3,17 +3,18 @@ import React, { ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
-  action: (id: string) => Promise<void>;
-  id: string;
-  name: string;
+  action: (id: string, token:string) => Promise<void>;
+  id: string
+  name: string
+  token: string
 };
 
-const DeleteButton = ({ children, action, id, name}: Props) => {
+const DeleteButton = ({ children, action, id, name, token}: Props) => {
   return (
     <button
       onClick={() => {
         if (confirm(`Estas seguro de que deseas eliminar este ${name}?`)) {
-          action(id);
+          action(id, token);
         }
       }}
       className="btn btn-secondary"

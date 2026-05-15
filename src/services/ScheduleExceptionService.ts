@@ -6,6 +6,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 export const ScheduleExceptionService = {
   create: async (
     data: ScheduleExceptionFormValues,
+    token: string,
   ): Promise<ScheduleExceptionDetailDTO> => {
     const response = await fetch(`${API_URL}/schedule-exceptions`, {
       method: "POST",
@@ -18,6 +19,7 @@ export const ScheduleExceptionService = {
   update: async (
     id: string,
     data: ScheduleExceptionFormValues,
+    token: string,
   ): Promise<ScheduleExceptionDetailDTO> => {
     const response = await fetch(`${API_URL}/schedule-exceptions/${id}`, {
       method: "PATCH",
@@ -27,22 +29,25 @@ export const ScheduleExceptionService = {
     if (!response.ok) throw new Error("Error al actualizar la excepción");
     return response.json();
   },
-  delete: async(id:string):Promise<void>=>{
+  delete: async (id: string, token: string): Promise<void> => {
     const response = await fetch(`${API_URL}/schedule-exceptions/${id}`, {
-        method:"DELETE"
-    })
-    if(!response.ok) throw new Error("Error al eliminar la excepción");
+      method: "DELETE",
+    });
+    if (!response.ok) throw new Error("Error al eliminar la excepción");
   },
-  get: async():Promise<ScheduleExceptionDetailDTO[]>=>{
+  get: async (token: string): Promise<ScheduleExceptionDetailDTO[]> => {
     const response = await fetch(`${API_URL}/schedule-exceptions`);
-    if(!response.ok) throw new Error("Error al obtener las excepciones");
+    if (!response.ok) throw new Error("Error al obtener las excepciones");
     const data = await response.json();
 
     return data.content || [];
   },
-  getById: async(id:string):Promise<ScheduleExceptionDetailDTO>=>{
+  getById: async (
+    id: string,
+    token: string,
+  ): Promise<ScheduleExceptionDetailDTO> => {
     const response = await fetch(`${API_URL}/schedule-exceptions/${id}`);
-    if(!response.ok) throw new Error("Error al obtener la excepción");
+    if (!response.ok) throw new Error("Error al obtener la excepción");
     return response.json();
-  }
+  },
 };

@@ -9,6 +9,7 @@ import {
 import FormSelect from "@/components/ui/FormSelect";
 import { useEffect, useState } from "react";
 import { AppointmentSlot } from "@/services/AppointmentService";
+import { createAppointmentAction } from "@/actions/appointmentActions";
 
 interface Props {
   doctorsList: { value: string; label: string }[];
@@ -20,7 +21,6 @@ export default function AppointmentBooking({
   availableSlots,
 }: Props) {
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -87,8 +87,40 @@ export default function AppointmentBooking({
   });
 
   const onSubmit = async (data: AppointmentFormValues) => {
-    console.log("Enviando turno a Spring Boot (sin auth):", data);
-    // await createAppointmentAction(data);
+    const selectedSlot = availableSlots.find((slot) => {
+      const dateObj = new Date(slot.startTimeUTC);
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const day = String(dateObj.getDate()).padStart(2, "0");
+      const localDateStr = `${year}-${month}-${day}`;
+
+      const hours = String(dateObj.getHours()).padStart(2, "0");
+      const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+      const localTimeStr = `${hours}:${minutes}`;
+
+      return (
+        slot.adminId.toString() === data.adminId &&
+        localDateStr === data.date &&
+        localTimeStr === data.startTime
+      );
+    });
+
+    if (!selectedSlot) {
+      alert("No se encontró el horario seleccionado. Por favor, volvé a intentarlo.");
+      return;
+    }
+
+    const payload = {
+      startTime: selectedSlot.startTimeUTC,
+      adminId: data.adminId,
+    };
+
+    console.log("Enviando turno a Spring Boot:", payload);
+    const result = await createAppointmentAction(payload);
+    
+    if (result?.error) {
+      alert(result.error);
+    }
   };
 
   return (
