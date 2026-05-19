@@ -204,11 +204,10 @@ export default function AppointmentBooking({
         </div>
       )}
 
-      {/* Botón Final */}
       <div className="pt-4 border-t">
         <button
           type="submit"
-          disabled={isSubmitting || !selectedTime || !selectedAdmin}
+          disabled={!mounted || isSubmitting || !selectedTime || !selectedAdmin}
           className="w-full bg-blue-600 text-white font-medium py-3.5 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg"
         >
           {isSubmitting ? "Procesando reserva..." : "Confirmar Turno"}

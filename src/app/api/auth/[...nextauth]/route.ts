@@ -33,6 +33,7 @@ export const authOptions: NextAuthOptions = {
           if (res.ok && data.token) {
             return {
               id: data.dto.id.toString(),
+              name: data.dto.name ? `${data.dto.name} ${data.dto.lastname || ""}`.trim() : undefined,
               email: data.dto.email || credentials?.email,
               backendToken: data.token,
               role: data.dto.role,

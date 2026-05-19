@@ -1,4 +1,3 @@
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
 export interface AppointmentSlot {
@@ -38,5 +37,20 @@ export const AppointmentService = {
     }
 
     return await response.json();
+  },
+  listAdminAppointments: async (token: string): Promise<Appointment[]> => {
+    const response = await fetch(`${API_URL}/appointments/admin`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al obtener los turnos");
+    }
+
+    const data = await response.json();
+
+    return data.content || [];
   },
 };

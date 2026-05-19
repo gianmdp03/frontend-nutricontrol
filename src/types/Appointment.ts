@@ -1,24 +1,23 @@
-import { AdminDetailDTO } from "./User";
-
-export interface AppointmentRequestDTO {
-  date: Date;
-  startTime: Date;
-  adminId: string;
+interface Admin {
+  id: number;
+  name: string;
+  lastname: string;
+  profilePicture: string | null;
+  email: string;
+  timezone: string;
 }
 
-export interface AppointmentDetailDTO extends Omit<
-  AppointmentRequestDTO,
-  "adminId"
-> {
-  id: string;
+interface Appointment {
+  id: number;
+  date: string;
+  startTime: string;
   endTime: string;
-  admin: AdminDetailDTO;
-  appointmentStatus: AppointmentStatus;
-}
-
-enum AppointmentStatus {
-  CONFIRMED,
-  CANCELLED,
-  PENDING,
-  COMPLETED,
+  admin: Admin;
+  appointmentStatus:
+    | "CONFIRMED"
+    | "CANCELLED"
+    | "PENDING"
+    | "COMPLETED"
+    | "CANCELLED_REFUND"
+    | "CANCELLED_WITHOUT_REFUND";
 }

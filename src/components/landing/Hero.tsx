@@ -1,6 +1,13 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ScrollAnimation from "@/components/ui/ScrollAnimation";
+import { getServerSession } from "next-auth";
+import Link from "next/link";
 
-const Hero = () => {
+type Props = {
+  isAdmin: boolean;
+};
+
+const Hero = ({ isAdmin }: Props) => {
   return (
     <ScrollAnimation>
       <section
@@ -101,27 +108,35 @@ const Hero = () => {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-4 pt-6">
-            <button className="bg-rose-500 hover:bg-rose-600 text-white px-6 py-3 rounded-md font-medium flex items-center gap-2">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          {!isAdmin && (
+            <div className="flex flex-wrap gap-4 pt-6">
+              <Link
+                href="/appointments"
+                className="bg-rose-500 hover:bg-rose-600 text-white px-6 py-3 rounded-md font-medium flex items-center gap-2"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                ></path>
-              </svg>
-              Agendar consulta ahora
-            </button>
-            <button className="bg-white border-2 border-gray-200 hover:border-gray-300 text-gray-700 px-6 py-3 rounded-md font-medium">
-              Ver servicios
-            </button>
-          </div>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                Agendar consulta ahora
+              </Link>
+              <Link
+                href="/#services"
+                className="bg-white border-2 border-gray-200 hover:border-gray-300 text-gray-700 px-6 py-3 rounded-md font-medium"
+              >
+                Ver servicios
+              </Link>
+            </div>
+          )}
         </div>
         <div className="md:w-1/2 relative">
           <img
