@@ -3,6 +3,7 @@
 import { Session } from "next-auth";
 import Link from "next/link";
 import ProfileMenu from "./ProfileMenu";
+import Logo from "./Logo";
 
 type Props = {
   session: Session | null;
@@ -12,8 +13,8 @@ type Props = {
 const AdminNavbar = ({ session, isAuthenticated }: Props) => {
   return (
     <aside className="w-64 bg-slate-900 text-white p-6 hidden md:block">
-      <h2 className="text-xl font-bold mb-8 text-rose-400">NutriControl</h2>
       <nav className="space-y-4">
+        <Logo white={true} />
         <Link href="/admin/services" className="block hover:text-rose-300">
           Gestionar servicios
         </Link>
@@ -29,10 +30,7 @@ const AdminNavbar = ({ session, isAuthenticated }: Props) => {
         >
           Gestionar excepciones
         </Link>
-        <Link
-          href="/admin/appointments"
-          className="block hover:text-rose-300"
-        >
+        <Link href="/admin/appointments" className="block hover:text-rose-300">
           Gestionar turnos
         </Link>
         <hr className="border-slate-700" />

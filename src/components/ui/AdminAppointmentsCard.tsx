@@ -1,26 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { cancelAdminAppointmentAction } from "@/actions/appointmentActions";
 
 export const formatTime = (timeStr: string) => {
   return timeStr.slice(0, 5);
 };
 
-type Props = {
-  appointment: any; // Using any or importing the right type
-  isToday: boolean;
-  onCancel?: () => void;
+// Función de utilidad para verificar si faltan más de 24 horas
+const isMoreThan24Hours = (dateStr: string, timeStr: string) => {
+  // Construimos la fecha del turno (Ej: "2026-05-19T10:30:00")
+  const appointmentDate = new Date(`${dateStr}T${timeStr}`);
+  const now = new Date();
+
+  // Calculamos la diferencia en milisegundos y la pasamos a horas
+  const diffInHours =
+    (appointmentDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+  return diffInHours > 24;
 };
 
-export function AdminAppointmentCard({
-  appointment,
-  isToday,
-  onCancel,
-}: Props) {
+type Props = {
+  appointment: any;
+  isToday: boolean;
+};
+
+export function AdminAppointmentCard({ appointment, isToday }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  
+  const [isPending, startTransition] = useTransition();
+
   const onToggleDropdown = () => setIsOpen(!isOpen);
-  const isCancelled = appointment.appointmentStatus === "CANCELLED";
+
+  // Consideramos cancelado si está en alguno de estos 3 estados
+  const isCancelled =
+    appointment.appointmentStatus === "CANCELLED" ||
+    appointment.appointmentStatus === "CANCELLED_REFUND" ||
+    appointment.appointmentStatus === "CANCELLED_WITHOUT_REFUND";
+
+  const handleCancel = () => {
+    // Calculamos si corresponde reembolso dinámicamente
+    const shouldRefund = isMoreThan24Hours(
+      appointment.date,
+      appointment.startTime,
+    );
+
+    // Mensaje dinámico para que la doctora sepa qué está pasando
+    const confirmMessage = shouldRefund
+      ? "¿Estás seguro que deseas cancelar este turno? \n\nFaltan MÁS de 24hs, por lo que se procesará el REEMBOLSO automático al paciente."
+      : "¿Estás seguro que deseas cancelar este turno? \n\nFaltan MENOS de 24hs, por lo que NO se realizará reembolso.";
+
+    if (window.confirm(confirmMessage)) {
+      startTransition(async () => {
+        // Le pasamos el boolean calculado a la Server Action
+        const result = await cancelAdminAppointmentAction(
+          appointment.id,
+          shouldRefund,
+        );
+        if (result?.error) {
+          alert(result.error);
+        }
+        setIsOpen(false);
+      });
+    }
+  };
 
   return (
     <div
@@ -51,11 +93,12 @@ export function AdminAppointmentCard({
             </span>
           </div>
           <div>
-            {/* Aquí a futuro iría el nombre del paciente, ahora mostramos que es un turno */}
             <h4
               className={`font-bold text-lg ${isCancelled ? "text-slate-500 line-through" : "text-slate-800"}`}
             >
-              Turno Reservado
+              {appointment.user
+                ? `${appointment.user.name} ${appointment.user.lastname}`
+                : "Turno Reservado"}
             </h4>
             <p className="text-sm text-slate-500 flex items-center gap-1.5 mt-0.5">
               <svg
@@ -100,7 +143,6 @@ export function AdminAppointmentCard({
 
           {isOpen && (
             <>
-              {/* Overlay invisible para cerrar al clickear afuera */}
               <div
                 className="fixed inset-0 z-10"
                 onClick={onToggleDropdown}
@@ -133,11 +175,9 @@ export function AdminAppointmentCard({
 
                   {!isCancelled && (
                     <button
-                      onClick={() => {
-                        setIsOpen(false);
-                        if (onCancel) onCancel();
-                      }}
-                      className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2 mt-1"
+                      onClick={handleCancel}
+                      disabled={isPending}
+                      className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2 mt-1 disabled:opacity-50"
                     >
                       <svg
                         className="w-4 h-4"
@@ -152,7 +192,7 @@ export function AdminAppointmentCard({
                           d="M6 18L18 6M6 6l12 12"
                         />
                       </svg>
-                      Cancelar Turno
+                      {isPending ? "Cancelando..." : "Cancelar Turno"}
                     </button>
                   )}
                 </div>
@@ -164,7 +204,6 @@ export function AdminAppointmentCard({
 
       <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          {/* Badge de Estado */}
           {isCancelled ? (
             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
               <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span>
@@ -178,13 +217,12 @@ export function AdminAppointmentCard({
           )}
         </div>
 
-        {/* Placeholder Doctora Zully */}
         <div className="flex items-center gap-2 text-xs text-slate-500">
           <div className="w-5 h-5 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-[10px]">
-            {appointment.admin.name[0]}
+            {appointment.admin?.name?.[0] || "D"}
           </div>
           <span className="hidden sm:inline">
-            Dra. {appointment.admin.lastname}
+            Dra. {appointment.admin?.lastname || "Doctora"}
           </span>
         </div>
       </div>

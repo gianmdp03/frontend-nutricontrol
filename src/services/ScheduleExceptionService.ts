@@ -10,7 +10,7 @@ export const ScheduleExceptionService = {
   ): Promise<ScheduleExceptionDetailDTO> => {
     const response = await fetch(`${API_URL}/schedule-exceptions`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify(data),
     });
     if (!response.ok) throw new Error("Error al crear la excepción");
@@ -23,7 +23,7 @@ export const ScheduleExceptionService = {
   ): Promise<ScheduleExceptionDetailDTO> => {
     const response = await fetch(`${API_URL}/schedule-exceptions/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify(data),
     });
     if (!response.ok) throw new Error("Error al actualizar la excepción");
@@ -32,11 +32,14 @@ export const ScheduleExceptionService = {
   delete: async (id: string, token: string): Promise<void> => {
     const response = await fetch(`${API_URL}/schedule-exceptions/${id}`, {
       method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (!response.ok) throw new Error("Error al eliminar la excepción");
   },
   get: async (token: string): Promise<ScheduleExceptionDetailDTO[]> => {
-    const response = await fetch(`${API_URL}/schedule-exceptions`);
+    const response = await fetch(`${API_URL}/schedule-exceptions`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     if (!response.ok) throw new Error("Error al obtener las excepciones");
     const data = await response.json();
 
@@ -46,7 +49,9 @@ export const ScheduleExceptionService = {
     id: string,
     token: string,
   ): Promise<ScheduleExceptionDetailDTO> => {
-    const response = await fetch(`${API_URL}/schedule-exceptions/${id}`);
+    const response = await fetch(`${API_URL}/schedule-exceptions/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     if (!response.ok) throw new Error("Error al obtener la excepción");
     return response.json();
   },

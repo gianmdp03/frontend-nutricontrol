@@ -1,6 +1,7 @@
 import { Session } from "next-auth";
 import Link from "next/link";
 import ProfileMenu from "./ProfileMenu";
+import Logo from "./Logo";
 
 type Props = {
   session: Session | null;
@@ -10,23 +11,8 @@ type Props = {
 const AppointmentPatientNavbar = ({ session, isAuthenticated }: Props) => {
   return (
     <nav className="max-w-7xl w-full shrink-0 mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-      {/* Logo */}
       <div className="flex items-center gap-2">
-        <div className="text-rose-500">
-          <svg
-            className="w-8 h-8"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 4v16m8-8H4"
-            ></path>
-          </svg>
-        </div>
+        <Logo white={false} />
         <div>
           <h1 className="text-xl font-bold text-slate-800 leading-tight">
             NutriControl

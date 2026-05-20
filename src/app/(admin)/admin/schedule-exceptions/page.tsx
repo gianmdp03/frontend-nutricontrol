@@ -3,10 +3,17 @@ import DeleteButton from "@/components/ui/DeleteButton";
 import { ScheduleExceptionService } from "@/services/ScheduleExceptionService";
 import { ScheduleExceptionDetailDTO } from "@/types/ScheduleException";
 import Link from "next/link";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
 const ScheduleExceptionsPage = async () => {
+  const token = (await getServerSession(authOptions))?.user?.backendToken;
+  if (!token) {
+    return <p className="p-8">Debes iniciar sesión para continuar</p>;
+  }
+
   const data: ScheduleExceptionDetailDTO[] =
-    await ScheduleExceptionService.get();
+    await ScheduleExceptionService.get(token);
   return (
     <div>
       <h2 className="text-2xl font-bold">Excepciones de horarios</h2>
@@ -28,7 +35,7 @@ const ScheduleExceptionsPage = async () => {
             <div className="border-b border-gray-100 pb-3 mb-3 mt-1 flex items-start justify-between gap-2">
               <div>
                 <h3 className="text-lg font-bold text-gray-800 capitalize">
-                  {new Date(exception.date).toLocaleDateString("es-AR", {
+                  {new Date(`${exception.date}T12:00:00`).toLocaleDateString("es-AR", {
                     weekday: "long",
                     day: "numeric",
                     month: "long",
@@ -97,6 +104,7 @@ const ScheduleExceptionsPage = async () => {
                   action={deleteScheduleExceptionAction}
                   id={exception.id}
                   name="excepción"
+                  token={token}
                 >
                   Eliminar
                 </DeleteButton>

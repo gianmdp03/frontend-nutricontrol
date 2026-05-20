@@ -4,6 +4,7 @@ import { AppointmentService } from "@/services/AppointmentService";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function createAppointmentAction(data: {
   startTime: string;
@@ -65,5 +66,22 @@ export async function confirmPaymentAction(paypalOrderId: string) {
     return { success: true };
   } catch (error) {
     return { error: "Hubo un problema de conexión al confirmar el pago." };
+  }
+}
+
+export async function cancelAdminAppointmentAction(id: number, refund: boolean = true) {
+  const session = await getServerSession(authOptions);
+  const token = session?.user?.backendToken;
+
+  if (!token) {
+    return { error: "No estás autenticado." };
+  }
+
+  try {
+    await AppointmentService.cancelAdminAppointment(id, refund, token);
+    revalidatePath("/admin/appointments"); 
+    return { success: true };
+  } catch (error) {
+    return { error: "Hubo un problema al cancelar el turno." };
   }
 }

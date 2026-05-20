@@ -4,8 +4,12 @@ import { deleteServiceAction } from "../../../../actions/serviceActions";
 import Link from "next/link";
 import { ServiceService } from "@/services/ServiceService";
 import { ServiceDetailDTO } from "@/types/Service";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
 const ServicesPage = async () => {
+  const session = await getServerSession(authOptions);
+  const token = session?.user?.backendToken || "";
   const data: ServiceDetailDTO[] = await ServiceService.get();
   return (
     <div className="grid-cols-3">
@@ -24,7 +28,7 @@ const ServicesPage = async () => {
           >
             Editar
           </Link>
-          <DeleteButton action={deleteServiceAction} id={service.id} name="servicio">
+          <DeleteButton action={deleteServiceAction} id={service.id} name={service.name} token={token}>
             Eliminar
           </DeleteButton>
         </ServiceCard>

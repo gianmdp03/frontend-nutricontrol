@@ -53,4 +53,35 @@ export const AppointmentService = {
 
     return data.content || [];
   },
+  listPatientAppointments: async (token: string): Promise<Appointment[]> => {
+    const response = await fetch(`${API_URL}/appointments/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al obtener tus turnos");
+    }
+
+    const data = await response.json();
+    return data.content || [];
+  },
+  cancelAdminAppointment: async (
+    id: number,
+    refund: boolean,
+    token: string,
+  ): Promise<void> => {
+    const response = await fetch(
+      `${API_URL}/appointments/admin/${id}?refund=${refund}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (!response.ok) throw new Error("Error al cancelar el turno");
+  },
 };

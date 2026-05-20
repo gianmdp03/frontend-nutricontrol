@@ -6,14 +6,14 @@ import { redirect } from "next/navigation";
 import { ServiceService } from "@/services/ServiceService";
 
 
-export async function deleteServiceAction(id: string) {
-  await ServiceService.delete(id);
+export async function deleteServiceAction(id: string, token: string) {
+  await ServiceService.delete(id, token);
   revalidatePath("/admin/services");
 }
 
-export async function createServiceAction(data: ServiceFormValues) {
+export async function createServiceAction(data: ServiceFormValues, token: string) {
   try {
-    await ServiceService.create(data);
+    await ServiceService.create(data, token);
   } catch (error) {
     return { error: "Hubo un problema de conexión con el servidor" };
   }
@@ -22,9 +22,9 @@ export async function createServiceAction(data: ServiceFormValues) {
   redirect("/admin/services");
 }
 
-export async function updateServiceAction(id: string, data: ServiceFormValues) {
+export async function updateServiceAction(id: string, data: ServiceFormValues, token: string) {
   try {
-    await ServiceService.update(id, data);
+    await ServiceService.update(id, data, token);
   } catch (error) {
     return { error: "Hubo un problema de conexión con el servidor" };
   }
