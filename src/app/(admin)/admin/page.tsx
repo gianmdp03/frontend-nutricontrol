@@ -28,6 +28,7 @@ export default async function AdminDashboard() {
   const userName = session?.user?.name || "Doctora";
   const userLastName = session?.user?.lastname || "";
   const fullName = userLastName ? `${userName} ${userLastName}` : userName;
+  const adminTz = session?.user?.timezone || "America/Santo_Domingo";
 
   let appointments: any[] = [];
   let services: any[] = [];
@@ -79,7 +80,7 @@ export default async function AdminDashboard() {
 
   // Turnos programados para hoy
   const todayStr = new Date().toLocaleDateString("en-CA", {
-    timeZone: "America/Argentina/Buenos_Aires",
+    timeZone: adminTz,
   });
   const todayAppointments = activeAppointments.filter((app) => app.date === todayStr);
 
@@ -124,7 +125,7 @@ export default async function AdminDashboard() {
     year: "numeric",
     month: "long",
     day: "numeric",
-    timeZone: "America/Argentina/Buenos_Aires",
+    timeZone: adminTz,
   });
 
   return (

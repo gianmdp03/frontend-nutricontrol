@@ -9,6 +9,7 @@ declare module "next-auth" {
       lastname?: string;
       role?: string;
       backendToken: string;
+      timezone?: string;
     }
   }
 
@@ -17,6 +18,7 @@ declare module "next-auth" {
     email: string;
     role?: string;
     backendToken?: string;
+    timezone?: string;
   }
 }
 
@@ -24,5 +26,6 @@ declare module "next-auth/jwt" {
   interface JWT {
     role?: string;
     backendToken?: string;
+    timezone?: string;
   }
 }

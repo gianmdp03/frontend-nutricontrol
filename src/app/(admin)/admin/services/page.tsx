@@ -13,7 +13,9 @@ const ServicesPage = async () => {
   const data: ServiceDetailDTO[] = await ServiceService.get();
   return (
     <div className="grid-cols-3">
-      <Link href={"/admin/services/new"} className="btn btn-primary">
+      <h2 className="text-2xl font-bold">Servicios</h2>
+
+      <Link href={"/admin/services/new"} className="btn btn-primary my-5">
         Crear nuevo servicio
       </Link>
       {data.map((service) => (
@@ -28,7 +30,12 @@ const ServicesPage = async () => {
           >
             Editar
           </Link>
-          <DeleteButton action={deleteServiceAction} id={service.id} name={service.name} token={token}>
+          <DeleteButton
+            action={deleteServiceAction}
+            id={service.id}
+            name={service.name}
+            token={token}
+          >
             Eliminar
           </DeleteButton>
         </ServiceCard>

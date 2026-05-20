@@ -51,6 +51,12 @@ const HomeNavbar = ({ session, isAuthenticated }: Props) => {
             >
               Iniciar Sesión
             </Link>
+            <Link
+              href="/register"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2.5 rounded-md font-medium text-sm transition"
+            >
+              Registrarse
+            </Link>
           </div>
         )}
       </div>

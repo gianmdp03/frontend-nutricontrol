@@ -1,17 +1,10 @@
 import AdminNavbar from "@/components/layout/AdminNavbar";
 import Navbar from "@/components/layout/Navbar";
-import { Session } from "next-auth";
-import { signOut } from "next-auth/react";
-import Link from "next/link";
 import { ReactNode } from "react";
 interface Props {
-  session: Session | null;
-  isAuthenticated: boolean;
   children: ReactNode;
 }
 export default function AdminLayout({
-  session,
-  isAuthenticated,
   children,
 }: Props) {
   return (

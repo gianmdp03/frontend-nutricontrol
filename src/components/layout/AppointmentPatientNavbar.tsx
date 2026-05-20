@@ -13,16 +13,6 @@ const AppointmentPatientNavbar = ({ session, isAuthenticated }: Props) => {
     <nav className="max-w-7xl w-full shrink-0 mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
       <div className="flex items-center gap-2">
         <Logo white={false} />
-        <div>
-          <h1 className="text-xl font-bold text-slate-800 leading-tight">
-            NutriControl
-            <br />
-            <span className="text-slate-600 font-medium">Familiar</span>
-          </h1>
-          <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-            Consulta médica virtual
-          </p>
-        </div>
       </div>
 
       <div className="hidden md:flex items-center space-x-6 text-sm font-medium text-gray-600">

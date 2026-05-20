@@ -15,17 +15,103 @@ export const formatDate = (dateStr: string) => {
   return date.toLocaleDateString("es-ES", options);
 };
 
+// Utilidad para convertir horas de la zona horaria de origen (médico) a la zona horaria destino (paciente)
+function convertTimezone(
+  dateStr: string,
+  timeStr: string,
+  sourceTz: string,
+  targetTz: string
+): { date: string; time: string } {
+  try {
+    const utcDate = new Date(`${dateStr}T${timeStr}Z`);
+    const formatterSource = new Intl.DateTimeFormat("en-US", {
+      timeZone: sourceTz,
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false,
+    });
+    
+    const partsSource = formatterSource.formatToParts(utcDate);
+    const getVal = (type: string) => partsSource.find(p => p.type === type)!.value;
+    
+    const sourceLocalDate = new Date(
+      Date.UTC(
+        Number(getVal("year")),
+        Number(getVal("month")) - 1,
+        Number(getVal("day")),
+        Number(getVal("hour")),
+        Number(getVal("minute")),
+        Number(getVal("second"))
+      )
+    );
+    
+    const offsetMs = utcDate.getTime() - sourceLocalDate.getTime();
+    const realUtcTimeMs = utcDate.getTime() + offsetMs;
+    const realUtcDate = new Date(realUtcTimeMs);
+    
+    const formatterTarget = new Intl.DateTimeFormat("en-US", {
+      timeZone: targetTz,
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false,
+    });
+    
+    const partsTarget = formatterTarget.formatToParts(realUtcDate);
+    const getValT = (type: string) => partsTarget.find(p => p.type === type)!.value;
+    
+    const targetYear = getValT("year");
+    const targetMonth = getValT("month").padStart(2, "0");
+    const targetDay = getValT("day").padStart(2, "0");
+    const targetHour = getValT("hour").padStart(2, "0");
+    const targetMinute = getValT("minute").padStart(2, "0");
+    
+    return {
+      date: `${targetYear}-${targetMonth}-${targetDay}`,
+      time: `${targetHour}:${targetMinute}:00`,
+    };
+  } catch (error) {
+    console.error("Error al convertir zona horaria:", error);
+    return { date: dateStr, time: timeStr };
+  }
+}
+
 export default async function MyAppointments() {
-  const token = (await getServerSession(authOptions))?.user?.backendToken || "";
+  const session = await getServerSession(authOptions);
+  const token = session?.user?.backendToken || "";
   const appointments = await AppointmentService.listPatientAppointments(token);
 
-  // Calculamos la fecha actual en formato YYYY-MM-DD respetando la zona horaria local
+  // Zona horaria del paciente guardada en el usuario (fallback a Argentina/Buenos_Aires)
+  const patientTz = session?.user?.timezone || "America/Argentina/Buenos_Aires";
+
+  // Calculamos la fecha actual en formato YYYY-MM-DD respetando la zona horaria del paciente
   const todayStr = new Date().toLocaleDateString("en-CA", {
-    timeZone: "America/Argentina/Buenos_Aires",
+    timeZone: patientTz,
+  });
+
+  // Convertimos las fechas y horas a la zona horaria del paciente
+  const convertedAppointments = appointments.map((app) => {
+    const adminTz = app.admin?.timezone || "America/Santo_Domingo"; // fallback a Dominicana
+    const startTimeConverted = convertTimezone(app.date, app.startTime, adminTz, patientTz);
+    const endTimeConverted = convertTimezone(app.date, app.endTime, adminTz, patientTz);
+    
+    return {
+      ...app,
+      date: startTimeConverted.date,
+      startTime: startTimeConverted.time,
+      endTime: endTimeConverted.time,
+    };
   });
 
   // Ordenamos los turnos (más cercanos primero) y luego por hora
-  const sortedAppointments = [...appointments].sort((a, b) => {
+  const sortedAppointments = [...convertedAppointments].sort((a, b) => {
     if (a.date !== b.date) return a.date.localeCompare(b.date);
     return a.startTime.localeCompare(b.startTime);
   });

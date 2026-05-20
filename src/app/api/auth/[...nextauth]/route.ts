@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
               email: data.dto.email || credentials?.email,
               backendToken: data.token,
               role: data.dto.role,
+              timezone: data.dto.timezone,
             };
           }
           return null;
@@ -76,6 +77,7 @@ export const authOptions: NextAuthOptions = {
           const backendData = await res.json();
           user.backendToken = backendData.token;
           user.role = backendData.dto?.role || "PATIENT";
+          user.timezone = backendData.dto?.timezone;
           return true;
         } catch (error) {
           console.error("Error sincronizando Google con Spring Boot", error);
@@ -89,6 +91,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.backendToken = user.backendToken;
         token.role = user.role;
+        token.timezone = user.timezone;
       }
       return token;
     },
@@ -97,6 +100,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.backendToken = token.backendToken as string;
         session.user.role = token.role as string;
+        session.user.timezone = token.timezone as string;
       }
       return session;
     },

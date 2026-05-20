@@ -1,7 +1,13 @@
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+import BackToPageButton from "@/components/ui/BackToPageButton";
+
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className="auth-container">
-      {/* Podés poner un fondo especial solo para login/register */}
+    <div className="relative min-h-screen">
+      <BackToPageButton />
       <main>{children}</main>
     </div>
   );
