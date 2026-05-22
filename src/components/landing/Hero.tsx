@@ -1,6 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ScrollAnimation from "@/components/ui/ScrollAnimation";
 import { getServerSession } from "next-auth";
+import Image from "next/image";
 import Link from "next/link";
 
 type Props = {
@@ -139,10 +140,12 @@ const Hero = ({ isAdmin }: Props) => {
           )}
         </div>
         <div className="md:w-1/2 relative">
-          <img
-            src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=800"
+          <Image
+            src="/hero_pic.png"
             alt="Dra. Zully María Cepeda Morel"
-            className="rounded-2xl object-cover h-125 w-full shadow-lg"
+            width={800}
+            height={800}
+            className="rounded-4xl object-cover object-top h-125 w-full shadow-lg"
           />
 
           <div className="absolute -bottom-6 right-6 bg-white p-4 rounded-xl shadow-xl flex flex-col items-center border border-gray-100">

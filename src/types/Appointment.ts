@@ -20,4 +20,5 @@ interface Appointment {
     | "COMPLETED"
     | "CANCELLED_REFUND"
     | "CANCELLED_WITHOUT_REFUND";
+  meetingLink?: string;
 }

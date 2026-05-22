@@ -1,4 +1,5 @@
 import ScrollAnimation from "@/components/ui/ScrollAnimation";
+import Image from "next/image";
 
 const About = () => {
   return (
@@ -9,8 +10,10 @@ const About = () => {
       >
         <div className="flex flex-col md:flex-row items-center gap-8">
           <div className="w-32 h-32 shrink-0">
-            <img
-              src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200"
+            <Image
+              width={128}
+              height={128}
+              src="/hero_pic.png"
               alt="Doctor Profile"
               className="w-full h-full object-cover rounded-full shadow-md border-4 border-white"
             />
