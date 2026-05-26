@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { cancelAdminAppointmentAction } from "@/actions/appointmentActions";
+import PatientMedicalRecordModal from "./PatientMedicalRecordModal";
 
 export const formatTime = (timeStr: string) => {
   return timeStr.slice(0, 5);
@@ -27,6 +28,7 @@ type Props = {
 
 export function AdminAppointmentCard({ appointment, isToday }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const onToggleDropdown = () => setIsOpen(!isOpen);
@@ -173,6 +175,21 @@ export function AdminAppointmentCard({ appointment, isToday }: Props) {
                     Ver detalles
                   </button>
 
+                  {appointment.user && (
+                    <button
+                      onClick={() => {
+                        setIsRecordModalOpen(true);
+                        setIsOpen(false);
+                      }}
+                      className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-slate-900 rounded-lg transition-colors flex items-center gap-2 mt-1"
+                    >
+                      <svg className="w-4 h-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Ver Ficha Médica
+                    </button>
+                  )}
+
                   {!isCancelled && (
                     <button
                       onClick={handleCancel}
@@ -241,6 +258,15 @@ export function AdminAppointmentCard({ appointment, isToday }: Props) {
             Unirse a la videollamada
           </a>
         </div>
+      )}
+
+      {appointment.user && (
+        <PatientMedicalRecordModal
+          isOpen={isRecordModalOpen}
+          onClose={() => setIsRecordModalOpen(false)}
+          patientId={appointment.user.id}
+          patientName={`${appointment.user.name} ${appointment.user.lastname || ""}`}
+        />
       )}
     </div>
   );

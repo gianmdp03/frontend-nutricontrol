@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import ReviewModal from "./ReviewModal";
 
 export const formatTime = (timeStr: string) => {
   return timeStr.slice(0, 5);
@@ -13,12 +14,24 @@ type Props = {
 
 export function PatientAppointmentCard({ appointment, isToday }: Props) {
   const [showDetails, setShowDetails] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   // Consideramos cancelado si está en alguno de estos 3 estados
   const isCancelled =
     appointment.appointmentStatus === "CANCELLED" ||
     appointment.appointmentStatus === "CANCELLED_REFUND" ||
     appointment.appointmentStatus === "CANCELLED_WITHOUT_REFUND";
+
+  // Determinar si el turno ya finalizó (estado COMPLETED o fecha en el pasado)
+  const isCompleted =
+    !isCancelled &&
+    (appointment.appointmentStatus === "COMPLETED" ||
+      appointment.appointmentStatus === "FINISHED" ||
+      new Date(`${appointment.date}T${appointment.endTime || "23:59:59"}`) < new Date());
+
+  const doctorName = appointment.admin
+    ? `Dra. ${appointment.admin.name} ${appointment.admin.lastname}`
+    : "Dra. Zully María Cepeda Morel";
 
   return (
     <div
@@ -27,7 +40,9 @@ export function PatientAppointmentCard({ appointment, isToday }: Props) {
           ? "border-emerald-100 shadow-[0_4px_20px_-4px_rgba(16,185,129,0.1)] hover:border-emerald-300 hover:shadow-[0_8px_30px_-4px_rgba(16,185,129,0.15)]"
           : isCancelled
             ? "border-slate-100 shadow-sm opacity-60 bg-slate-50"
-            : "border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300"
+            : isCompleted
+              ? "border-indigo-100 hover:border-indigo-200 shadow-sm"
+              : "border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300"
       }`}
     >
       {/* Decoración superior para HOY */}
@@ -84,6 +99,11 @@ export function PatientAppointmentCard({ appointment, isToday }: Props) {
                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span>
                Cancelado
              </span>
+          ) : isCompleted ? (
+             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+               <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mr-1.5"></span>
+               Finalizado
+             </span>
           ) : (
             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
@@ -107,6 +127,28 @@ export function PatientAppointmentCard({ appointment, isToday }: Props) {
           </svg>
         </button>
       </div>
+
+      {/* Botón directo de reseña si finalizó */}
+      {isCompleted && (
+        <div className="mt-4 pt-4 border-t border-slate-100">
+          <button
+            onClick={() => setIsReviewModalOpen(true)}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-bold rounded-xl text-xs transition-all shadow-xs hover:shadow-md active:scale-95"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.961 0 1.36 1.24.588 1.81l-3.97 2.883a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.883a1 1 0 00-1.175 0l-3.97 2.883c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.97-2.883c-.77-.57-.37-1.81.588-1.81h4.906a1 1 0 00.951-.69l1.519-4.674z" />
+            </svg>
+            Dejar mi Reseña
+          </button>
+        </div>
+      )}
+
+      {/* Modal para ingresar la valoración */}
+      <ReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        doctorName={doctorName}
+      />
 
       {/* Botón directo de Videollamada si el turno está confirmado y no está colapsado */}
       {!showDetails && appointment.appointmentStatus === "CONFIRMED" && appointment.meetingLink && (

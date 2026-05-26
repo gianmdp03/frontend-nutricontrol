@@ -2,6 +2,7 @@ import { Session } from "next-auth";
 import Link from "next/link";
 import ProfileMenu from "./ProfileMenu";
 import Logo from "./Logo";
+import NotificationBell from "./NotificationBell";
 
 type Props = {
   session: Session | null;
@@ -40,7 +41,10 @@ const AppointmentPatientNavbar = ({ session, isAuthenticated }: Props) => {
       {/* Sección del Perfil / Botón de Login */}
       <div className="flex items-center gap-4">
         {isAuthenticated ? (
-          <ProfileMenu session={session} theme="light" />
+          <div className="flex items-center gap-3">
+            <NotificationBell />
+            <ProfileMenu session={session} theme="light" />
+          </div>
         ) : (
           <div className="flex gap-2">
             <Link
