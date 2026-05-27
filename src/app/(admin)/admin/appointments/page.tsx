@@ -62,22 +62,7 @@ export default async function AdminAppointments() {
             Administra tus próximas citas y horarios de atención.
           </p>
         </div>
-        <button className="bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-lg font-medium transition-colors shadow-sm flex items-center gap-2 w-fit">
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-          Nuevo Turno Manual
-        </button>
+        
       </div>
 
       {/* SECCIÓN HOY */}

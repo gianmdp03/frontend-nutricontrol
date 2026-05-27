@@ -63,7 +63,6 @@ export default function PatientMedicalRecordPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
-      <Navbar variant="APPOINTMENT_PATIENT" />
 
       <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto space-y-8">

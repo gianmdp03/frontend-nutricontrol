@@ -21,7 +21,6 @@ export default async function Home() {
       <Hero isAdmin={isAdmin} />
       <Services />
       <ConsultationInfo />
-      <Consultation />
       <About />
       <Footer />
     </>
