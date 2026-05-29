@@ -84,4 +84,39 @@ export const AppointmentService = {
 
     if (!response.ok) throw new Error("Error al cancelar el turno");
   },
+  getAppointmentById: async (id: number, token: string): Promise<Appointment> => {
+    try {
+      const response = await fetch(`${API_URL}/appointments/admin/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (e) {
+      console.warn("Failed fetching single appointment by admin endpoint, trying generic endpoint", e);
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/appointments/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (e) {
+      console.warn("Failed fetching generic appointment, falling back to list scan", e);
+    }
+
+    // Fallback: list all admin appointments and search by id
+    const appointments = await AppointmentService.listAdminAppointments(token);
+    const found = appointments.find((app) => app.id === id);
+    if (!found) {
+      throw new Error(`No se encontró el turno con ID ${id}`);
+    }
+    return found;
+  },
 };

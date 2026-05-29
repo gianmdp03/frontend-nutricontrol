@@ -4,6 +4,11 @@ import { redirect } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
+import AdminPresetForm from "@/components/admin/AdminPresetForm";
+import { AdminPresetService } from "@/services/AdminPresetService";
+import PatientDocumentsView from "@/components/patient/PatientDocumentsView";
+import { PrescriptionService } from "@/services/PrescriptionService";
+import { MedicalCertificateService } from "@/services/MedicalCertificateService";
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
@@ -13,6 +18,27 @@ export default async function ProfilePage() {
   }
 
   const { name, email, role } = session.user;
+  const token = session.user.backendToken || "";
+  let presetData = undefined;
+  let prescriptions: any[] = [];
+  let certificates: any[] = [];
+
+  if (role === "ROLE_ADMIN") {
+    try {
+      presetData = await AdminPresetService.getPreset(token);
+    } catch (e) {
+      console.error("Error loading admin preset in ProfilePage:", e);
+    }
+  }
+
+  if (role === "ROLE_PATIENT") {
+    try {
+      prescriptions = await PrescriptionService.getPatientPrescriptions(token);
+      certificates = await MedicalCertificateService.getPatientMedicalCertificates(token);
+    } catch (e) {
+      console.error("Error loading patient clinical documents in ProfilePage:", e);
+    }
+  }
   const userName = name || "Usuario";
   const userRole = role === "ROLE_ADMIN" ? "Administrador" : "Paciente";
   const nameParts = userName.trim().split(" ");
@@ -120,42 +146,8 @@ export default async function ProfilePage() {
               </>
             ) : (
               <>
-                {/* Account Settings Placeholder (Admin) */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col h-full">
-                  <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Configuración de cuenta
-                  </h2>
-                  <div className="space-y-4 flex-1">
-                    <div className="flex justify-between items-center py-3 border-b border-slate-50">
-                      <div>
-                        <p className="text-sm font-medium text-slate-800">Notificaciones</p>
-                        <p className="text-xs text-slate-500 mt-0.5">Alertas de turnos por email</p>
-                      </div>
-                      <div className="w-10 h-5 bg-slate-200 rounded-full relative cursor-not-allowed opacity-70">
-                        <div className="w-4 h-4 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm"></div>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center py-3">
-                      <div>
-                        <p className="text-sm font-medium text-slate-800">Contraseña</p>
-                        <p className="text-xs text-slate-500 mt-0.5">Última actualización: Nunca</p>
-                      </div>
-                      <button className="text-slate-400 text-sm font-medium cursor-not-allowed opacity-50">
-                        Cambiar
-                      </button>
-                    </div>
-                  </div>
-                  <div className="mt-4 p-3 bg-blue-50 text-blue-700 rounded-lg text-xs flex items-start gap-2 border border-blue-100">
-                    <svg className="w-4 h-4 shrink-0 mt-0.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p>Las opciones de configuración estarán disponibles en la próxima actualización.</p>
-                  </div>
-                </div>
+                {/* AdminPreset Form */}
+                <AdminPresetForm initialData={presetData} />
 
                 {/* Tarjeta Admin Panel */}
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col h-full">
@@ -181,6 +173,14 @@ export default async function ProfilePage() {
             )}
             
           </div>
+
+          {isPatient && (
+            <PatientDocumentsView
+              prescriptions={prescriptions}
+              certificates={certificates}
+              token={token}
+            />
+          )}
         </div>
       </main>
       
