@@ -1,5 +1,5 @@
 import ScrollAnimation from "@/components/ui/ScrollAnimation";
-import ServiceCard from "@/components/ui/ServiceCard";
+import ServiceCard from "@/components/admin/services/ServiceCard";
 import { ServiceService } from "@/services/ServiceService";
 import { ServiceDetailDTO } from "@/types/Service";
 const Services = async () => {

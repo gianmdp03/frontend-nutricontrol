@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { cancelAdminAppointmentAction } from "@/actions/appointmentActions";
-import PatientMedicalRecordModal from "./PatientMedicalRecordModal";
+import PatientMedicalRecordModal from "@/components/admin/documents/PatientMedicalRecordModal";
 import Link from "next/link";
 
 export const formatTime = (timeStr: string) => {

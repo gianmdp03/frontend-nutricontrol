@@ -38,9 +38,10 @@ export const ReviewService = {
     token: string,
     page: number = 0,
     size: number = 20,
+    sort: string = "date,desc",
   ): Promise<PaginatedReviews> => {
     const response = await fetch(
-      `${API_URL}/reviews/admin?page=${page}&size=${size}`,
+      `${API_URL}/reviews/admin?page=${page}&size=${size}&sort=${sort}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

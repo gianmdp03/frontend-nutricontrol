@@ -1,4 +1,5 @@
 import { ApiError, handleResponseError } from "@/utils/ApiError";
+import { Appointment } from "@/types/Appointment";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
@@ -120,5 +121,25 @@ export const AppointmentService = {
       throw new ApiError(404, `No se encontró el turno con ID ${id}`);
     }
     return found;
+  },
+  startAppointment: async (id: number, token: string): Promise<Appointment> => {
+    const response = await fetch(`${API_URL}/appointments/${id}/start`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) await handleResponseError(response);
+    return response.json();
+  },
+  completeAppointment: async (id: number, token: string): Promise<Appointment> => {
+    const response = await fetch(`${API_URL}/appointments/${id}/complete`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) await handleResponseError(response);
+    return response.json();
   },
 };

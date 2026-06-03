@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import ManualDocumentForm from "@/components/admin/ManualDocumentForm";
-import ManualDocumentList from "@/components/admin/ManualDocumentList";
+import ManualDocumentForm from "@/components/admin/documents/ManualDocumentForm";
+import ManualDocumentList from "@/components/admin/documents/ManualDocumentList";
 import { prescriptionSchema } from "@/schemas/PrescriptionSchema";
 import { createManualPrescriptionAction } from "@/actions/prescriptionActions";
 

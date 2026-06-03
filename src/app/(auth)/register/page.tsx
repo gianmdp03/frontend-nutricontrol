@@ -54,7 +54,6 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: RegisterFormValues) => {
     setGlobalError("");
-    console.log("Enviando payload de registro al backend:", data);
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {

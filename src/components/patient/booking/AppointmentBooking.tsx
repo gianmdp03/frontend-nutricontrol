@@ -115,7 +115,6 @@ export default function AppointmentBooking({
       adminId: data.adminId,
     };
 
-    console.log("Enviando turno a Spring Boot:", payload);
     const result = await createAppointmentAction(payload);
     
     if (result?.error) {

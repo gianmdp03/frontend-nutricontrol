@@ -1,7 +1,7 @@
 import { deleteScheduleRuleAction } from "@/actions/scheduleRuleActions";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import DeleteButton from "@/components/ui/DeleteButton";
-import ScheduleRuleCard from "@/components/ui/ScheduleRuleCard";
+import ScheduleRuleCard from "@/components/admin/schedule-rules/ScheduleRuleCard";
 import { ScheduleRuleService } from "@/services/ScheduleRuleService";
 import { getServerSession } from "next-auth";
 import Link from "next/link";

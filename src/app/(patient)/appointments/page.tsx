@@ -1,4 +1,4 @@
-import AppointmentBooking from "@/components/ui/AppointmentBooking";
+import AppointmentBooking from "@/components/patient/booking/AppointmentBooking";
 import { AppointmentService } from "@/services/AppointmentService";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";

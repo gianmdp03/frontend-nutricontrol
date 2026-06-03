@@ -1,4 +1,4 @@
-import ServiceCard from "@/components/ui/ServiceCard";
+import ServiceCard from "@/components/admin/services/ServiceCard";
 import DeleteButton from "../../../../components/ui/DeleteButton";
 import { deleteServiceAction } from "../../../../actions/serviceActions";
 import Link from "next/link";

@@ -1,4 +1,4 @@
-interface Admin {
+export interface Admin {
   id: number;
   name: string;
   lastname: string;
@@ -7,7 +7,7 @@ interface Admin {
   timezone: string;
 }
 
-interface Appointment {
+export interface Appointment {
   id: number;
   date: string;
   startTime: string;

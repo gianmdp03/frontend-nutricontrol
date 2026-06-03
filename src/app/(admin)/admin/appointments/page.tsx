@@ -1,5 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { AdminAppointmentCard } from "@/components/ui/AdminAppointmentsCard";
+import { AdminAppointmentCard } from "@/components/admin/appointments/AdminAppointmentCard";
 import { AppointmentService } from "@/services/AppointmentService";
 import { getServerSession } from "next-auth";
 

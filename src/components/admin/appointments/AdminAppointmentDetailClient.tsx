@@ -3,16 +3,21 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import PatientMedicalRecordModal from "../ui/PatientMedicalRecordModal";
-import PrescriptionFormModal from "./PrescriptionFormModal";
-import MedicalCertificateFormModal from "./MedicalCertificateFormModal";
-import NutritionalPlanFormModal from "./NutritionalPlanFormModal";
+import PatientMedicalRecordModal from "@/components/admin/documents/PatientMedicalRecordModal";
+import PrescriptionFormModal from "@/components/admin/documents/PrescriptionFormModal";
+import MedicalCertificateFormModal from "@/components/admin/documents/MedicalCertificateFormModal";
+import NutritionalPlanFormModal from "@/components/admin/documents/NutritionalPlanFormModal";
+import { startAppointmentAction, completeAppointmentAction } from "@/actions/appointmentActions";
 
 interface AdminAppointmentDetailClientProps {
   appointment: any;
 }
 
-export default function AdminAppointmentDetailClient({ appointment }: AdminAppointmentDetailClientProps) {
+export default function AdminAppointmentDetailClient({ appointment: initialAppointment }: AdminAppointmentDetailClientProps) {
+  // Estado local para manejar las transiciones del turno sin recargar la página
+  const [appointment, setAppointment] = useState(initialAppointment);
+  const [loading, setLoading] = useState(false);
+
   const [isRecordOpen, setIsRecordOpen] = useState(false);
   const [isPrescriptionOpen, setIsPrescriptionOpen] = useState(false);
   const [isCertificateOpen, setIsCertificateOpen] = useState(false);
@@ -41,6 +46,70 @@ export default function AdminAppointmentDetailClient({ appointment }: AdminAppoi
   const patientId = appointment.user ? parseInt(appointment.user.id, 10) || 0 : 0;
   const patientName = appointment.user ? `${appointment.user.name} ${appointment.user.lastname || ""}` : "Turno Reservado";
 
+  // --- HANDLERS DEL CICLO DE VIDA DEL TURNO ---
+  const handleStart = async () => {
+    try {
+      setLoading(true);
+      const updated = await startAppointmentAction(appointment.id);
+      setAppointment(updated);
+      
+      // Abre el meet automáticamente
+      if (updated.meetingLink) {
+        window.open(updated.meetingLink, '_blank');
+      }
+    } catch (error) {
+      console.error("Error al iniciar el turno:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleComplete = async () => {
+    try {
+      setLoading(true);
+      const updated = await completeAppointmentAction(appointment.id);
+      setAppointment(updated);
+    } catch (error) {
+      console.error("Error al finalizar el turno:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Helper para renderizar el badge de estado correctamente
+  const renderStatusBadge = () => {
+    if (isCancelled) {
+      return (
+        <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+          <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-2"></span>
+          Cancelado
+        </span>
+      );
+    }
+    if (appointment.appointmentStatus === "COMPLETED") {
+      return (
+        <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100 shadow-xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2"></span>
+          Finalizado
+        </span>
+      );
+    }
+    if (appointment.appointmentStatus === "IN_PROGRESS") {
+      return (
+        <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 shadow-xs animate-pulse">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-2"></span>
+          En Curso
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-xs">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2"></span>
+        Confirmado
+      </span>
+    );
+  };
+
   return (
     <div className="space-y-8 max-w-5xl mx-auto p-4 md:p-6 min-h-screen">
       {/* Volver y Título */}
@@ -61,17 +130,7 @@ export default function AdminAppointmentDetailClient({ appointment }: AdminAppoi
         </div>
         <div className="flex items-center gap-2.5">
           <span className="text-xs text-slate-400 font-bold">Ref: #{appointment.id}</span>
-          {isCancelled ? (
-            <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-2"></span>
-              Cancelado
-            </span>
-          ) : (
-            <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2"></span>
-              Confirmado
-            </span>
-          )}
+          {renderStatusBadge()}
         </div>
       </div>
 
@@ -125,9 +184,24 @@ export default function AdminAppointmentDetailClient({ appointment }: AdminAppoi
             </div>
           </div>
 
-          {/* Card: Sala de Consulta (Video Call) */}
-          {!isCancelled && (
-            <div className="bg-gradient-to-r from-rose-50 to-orange-50/50 rounded-3xl p-6 sm:p-8 border border-rose-100/50 shadow-xs relative overflow-hidden">
+          {/* Card: Turno Finalizado (Reemplaza a la sala si ya se completó) */}
+          {appointment.appointmentStatus === "COMPLETED" && (
+            <div className="bg-gradient-to-r from-emerald-50 to-teal-50/50 rounded-3xl p-6 sm:p-8 border border-emerald-100 shadow-xs relative overflow-hidden text-center">
+              <div className="mx-auto w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-emerald-900">Consulta Finalizada</h3>
+              <p className="text-sm text-emerald-700/80 mt-1">
+                Este turno fue marcado como completado exitosamente.
+              </p>
+            </div>
+          )}
+
+          {/* Card: Sala de Consulta (Video Call) - Sólo si no está cancelado ni completado */}
+          {!isCancelled && appointment.appointmentStatus !== "COMPLETED" && (
+            <div className="bg-gradient-to-r from-rose-50 to-orange-50/50 rounded-3xl p-6 sm:p-8 border border-rose-100/50 shadow-xs relative overflow-hidden transition-all">
               <div className="absolute right-0 bottom-0 translate-x-4 translate-y-4 opacity-10 text-rose-600">
                 <svg className="w-32 h-32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -136,25 +210,56 @@ export default function AdminAppointmentDetailClient({ appointment }: AdminAppoi
 
               <div className="relative z-10 space-y-4">
                 <div>
-                  <h3 className="text-lg font-bold text-rose-950">Sala de Videollamada</h3>
+                  <h3 className="text-lg font-bold text-rose-950">
+                    {appointment.appointmentStatus === "IN_PROGRESS" ? "Videollamada en Curso" : "Sala de Videollamada"}
+                  </h3>
                   <p className="text-sm text-rose-700/80 mt-0.5">
-                    Accede a la sesión virtual de consulta en tiempo real con tu paciente.
+                    {appointment.appointmentStatus === "IN_PROGRESS" 
+                      ? "La consulta está actualmente activa. No te olvides de finalizarla cuando termines." 
+                      : "Accede a la sesión virtual de consulta en tiempo real con tu paciente."}
                   </p>
                 </div>
 
                 {appointment.meetingLink ? (
-                  <div className="pt-2">
-                    <a
-                      href={appointment.meetingLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg active:scale-98"
-                    >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
-                      Unirse a la Videollamada
-                    </a>
+                  <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                    
+                    {appointment.appointmentStatus === "CONFIRMED" && (
+                      <button
+                        onClick={handleStart}
+                        disabled={loading}
+                        className="inline-flex justify-center items-center gap-2 px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg active:scale-98 disabled:opacity-70"
+                      >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {loading ? "Iniciando..." : "Iniciar Turno y Abrir Meet"}
+                      </button>
+                    )}
+
+                    {appointment.appointmentStatus === "IN_PROGRESS" && (
+                      <>
+                        <a
+                          href={appointment.meetingLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex justify-center items-center gap-2 px-6 py-3 bg-white text-rose-600 font-bold rounded-xl text-sm border border-rose-200 transition-all shadow-sm hover:shadow-md hover:bg-rose-50 active:scale-98"
+                        >
+                          Reabrir Meet
+                        </a>
+                        <button
+                          onClick={handleComplete}
+                          disabled={loading}
+                          className="inline-flex justify-center items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg active:scale-98 disabled:opacity-70"
+                        >
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                          </svg>
+                          {loading ? "Finalizando..." : "Finalizar Turno"}
+                        </button>
+                      </>
+                    )}
                   </div>
                 ) : (
                   <div className="p-4 bg-slate-50 border border-slate-100 text-slate-500 text-xs rounded-xl flex items-center gap-2.5">
@@ -203,8 +308,16 @@ export default function AdminAppointmentDetailClient({ appointment }: AdminAppoi
 
           {/* Card: Acciones Clínicas rápidas */}
           {!isCancelled && appointment.user && (
-            <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Gestión Documental</span>
+            <div className={`bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4 ${appointment.appointmentStatus === 'IN_PROGRESS' ? 'ring-2 ring-rose-200 shadow-rose-100' : ''}`}>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block flex items-center justify-between">
+                Gestión Documental
+                {appointment.appointmentStatus === 'IN_PROGRESS' && (
+                  <span className="flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-rose-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                  </span>
+                )}
+              </span>
               
               <div className="space-y-2">
                 <button
@@ -228,7 +341,7 @@ export default function AdminAppointmentDetailClient({ appointment }: AdminAppoi
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    Emitir Certificado Médico
+                    Emitir Certificado
                   </span>
                   <span>+</span>
                 </button>

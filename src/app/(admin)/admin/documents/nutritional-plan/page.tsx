@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { nutritionalPlanSchema, NutritionalPlanFormValues } from "@/schemas/NutritionalPlanSchema";
 import { createManualNutritionalPlanAction } from "@/actions/nutritionalPlanActions";
-import ManualDocumentList from "@/components/admin/ManualDocumentList";
+import ManualDocumentList from "@/components/admin/documents/ManualDocumentList";
 
 const DAYS_OF_WEEK = [
   { key: "MONDAY", label: "Lunes" },

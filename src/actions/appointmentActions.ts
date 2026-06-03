@@ -1,11 +1,12 @@
 "use server";
 
 import { AppointmentService } from "@/services/AppointmentService";
+import { PaymentService } from "@/services/PaymentService";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { ApiError, handleResponseError } from "@/utils/ApiError";
+import { ApiError } from "@/utils/ApiError";
 
 export async function createAppointmentAction(data: {
   startTime: string;
@@ -49,23 +50,7 @@ export async function confirmPaymentAction(paypalOrderId: string) {
   }
 
   try {
-    const API_URL =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
-
-    const response = await fetch(`${API_URL}/payments/confirm`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-
-      body: JSON.stringify({ paypalOrderId }),
-    });
-
-    if (!response.ok) {
-      await handleResponseError(response);
-    }
-
+    await PaymentService.confirmPayment(paypalOrderId, token);
     return { success: true };
   } catch (error) {
     if (error instanceof ApiError) {
@@ -74,6 +59,28 @@ export async function confirmPaymentAction(paypalOrderId: string) {
     console.error("Error in confirmPaymentAction:", error);
     return { success: false, message: "Hubo un problema de conexión al confirmar el pago.", error: "Hubo un problema de conexión al confirmar el pago." };
   }
+}
+
+export async function startAppointmentAction(id: number) {
+  const session = await getServerSession(authOptions);
+  const token = session?.user?.backendToken;
+
+  if (!token) {
+    throw new Error("No estás autenticado.");
+  }
+
+  return await AppointmentService.startAppointment(id, token);
+}
+
+export async function completeAppointmentAction(id: number) {
+  const session = await getServerSession(authOptions);
+  const token = session?.user?.backendToken;
+
+  if (!token) {
+    throw new Error("No estás autenticado.");
+  }
+
+  return await AppointmentService.completeAppointment(id, token);
 }
 
 export async function cancelAdminAppointmentAction(id: number, refund: boolean = true) {

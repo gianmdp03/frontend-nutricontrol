@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { AppointmentService } from "@/services/AppointmentService";
 import { notFound, redirect } from "next/navigation";
-import AdminAppointmentDetailClient from "@/components/admin/AdminAppointmentDetailClient";
+import AdminAppointmentDetailClient from "@/components/admin/appointments/AdminAppointmentDetailClient";
 import React from "react";
 
 interface PageProps {
