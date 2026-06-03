@@ -1,4 +1,5 @@
 import { PrescriptionDetailDTO, PrescriptionRequestDTO } from "@/types/Prescription";
+import { ApiError, handleResponseError } from "@/utils/ApiError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
@@ -17,8 +18,27 @@ export const PrescriptionService = {
     });
 
     if (!response.ok) {
-      const errorMsg = await response.text().catch(() => "");
-      throw new Error(errorMsg || "Error al crear la receta médica");
+      await handleResponseError(response);
+    }
+
+    return response.json();
+  },
+
+  createManualPrescription: async (
+    data: PrescriptionRequestDTO,
+    token: string,
+  ): Promise<PrescriptionDetailDTO> => {
+    const response = await fetch(`${API_URL}/prescriptions/admin/manual`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      await handleResponseError(response);
     }
 
     return response.json();
@@ -35,23 +55,35 @@ export const PrescriptionService = {
         const data = await response.json();
         return data.content || data || [];
       }
+      console.warn(`Failed fetching from /prescriptions/user, status: ${response.status}`);
     } catch (e) {
       console.warn("Failed fetching from /prescriptions/user, trying generic", e);
     }
 
-    try {
-      const response = await fetch(`${API_URL}/prescriptions`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        return data.content || data || [];
-      }
-    } catch (e) {
-      console.error("Failed fetching prescriptions", e);
+    const response = await fetch(`${API_URL}/prescriptions`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      await handleResponseError(response);
     }
-    return [];
+    const data = await response.json();
+    return data.content || data || [];
+  },
+
+  getManualPrescriptions: async (token: string): Promise<PrescriptionDetailDTO[]> => {
+    const response = await fetch(`${API_URL}/prescriptions/admin/manual`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      await handleResponseError(response);
+    }
+
+    const data = await response.json();
+    return data.content || data || [];
   },
 };

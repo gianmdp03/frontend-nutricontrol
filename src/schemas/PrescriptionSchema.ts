@@ -10,7 +10,7 @@ export const prescriptionSchema = z.object({
   textareaTexto: z
     .string()
     .check(z.minLength(1, "El cuerpo de la receta es obligatorio")),
-  userId: z.number(),
+  userId: z.optional(z.number()),
 });
 
 export type PrescriptionFormValues = z.infer<typeof prescriptionSchema>;

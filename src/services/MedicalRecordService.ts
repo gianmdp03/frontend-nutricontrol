@@ -1,4 +1,5 @@
 import { MedicalRecordDetailDTO } from "@/types/MedicalRecord";
+import { ApiError, handleResponseError } from "@/utils/ApiError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
@@ -18,8 +19,7 @@ export const MedicalRecordService = {
     });
 
     if (!response.ok) {
-      const errorMsg = await response.text().catch(() => "");
-      throw new Error(errorMsg || "Error al guardar la ficha médica");
+      await handleResponseError(response);
     }
 
     return response.json();
@@ -38,7 +38,7 @@ export const MedicalRecordService = {
         // En caso de que no exista aún, devolvemos un objeto vacío para inicializar
         return { weight: 0, height: 0, medicalHistory: "", medication: "" };
       }
-      throw new Error("Error al obtener la ficha médica");
+      await handleResponseError(response);
     }
 
     return response.json();
@@ -56,7 +56,7 @@ export const MedicalRecordService = {
     });
 
     if (!response.ok) {
-      throw new Error("Error al obtener la ficha médica del paciente");
+      await handleResponseError(response);
     }
 
     return response.json();

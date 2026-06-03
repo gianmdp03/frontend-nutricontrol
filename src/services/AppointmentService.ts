@@ -1,3 +1,5 @@
+import { ApiError, handleResponseError } from "@/utils/ApiError";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
 export interface AppointmentSlot {
@@ -15,7 +17,7 @@ export const AppointmentService = {
         Authorization: `Bearer ${token}`,
       },
     });
-    if (!response.ok) throw new Error("Error al obtener los turnos");
+    if (!response.ok) await handleResponseError(response);
     const data = await response.json();
     return data || [];
   },
@@ -33,7 +35,7 @@ export const AppointmentService = {
     });
 
     if (!response.ok) {
-      throw new Error("Error al crear el turno");
+      await handleResponseError(response);
     }
 
     return await response.json();
@@ -46,7 +48,7 @@ export const AppointmentService = {
     });
 
     if (!response.ok) {
-      throw new Error("Error al obtener los turnos");
+      await handleResponseError(response);
     }
 
     const data = await response.json();
@@ -61,7 +63,7 @@ export const AppointmentService = {
     });
 
     if (!response.ok) {
-      throw new Error("Error al obtener tus turnos");
+      await handleResponseError(response);
     }
 
     const data = await response.json();
@@ -82,7 +84,7 @@ export const AppointmentService = {
       },
     );
 
-    if (!response.ok) throw new Error("Error al cancelar el turno");
+    if (!response.ok) await handleResponseError(response);
   },
   getAppointmentById: async (id: number, token: string): Promise<Appointment> => {
     try {
@@ -115,7 +117,7 @@ export const AppointmentService = {
     const appointments = await AppointmentService.listAdminAppointments(token);
     const found = appointments.find((app) => app.id === id);
     if (!found) {
-      throw new Error(`No se encontró el turno con ID ${id}`);
+      throw new ApiError(404, `No se encontró el turno con ID ${id}`);
     }
     return found;
   },

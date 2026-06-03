@@ -3,7 +3,7 @@ import React, { ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
-  action: (id: string, token:string) => Promise<void>;
+  action: (id: string, token:string) => Promise<any>;
   id: string
   name: string
   token: string

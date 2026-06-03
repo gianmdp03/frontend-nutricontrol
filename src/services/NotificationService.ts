@@ -1,4 +1,5 @@
 import { NotificationDetailDTO } from "@/types/Notification";
+import { ApiError, handleResponseError } from "@/utils/ApiError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
@@ -27,7 +28,7 @@ export const NotificationService = {
     );
 
     if (!response.ok) {
-      throw new Error("Error al obtener las notificaciones no leídas");
+      await handleResponseError(response);
     }
 
     return response.json();
@@ -43,7 +44,7 @@ export const NotificationService = {
     });
 
     if (!response.ok) {
-      throw new Error("Error al marcar la notificación como leída");
+      await handleResponseError(response);
     }
   },
 
@@ -57,7 +58,7 @@ export const NotificationService = {
     });
 
     if (!response.ok) {
-      throw new Error("Error al marcar todas las notificaciones como leídas");
+      await handleResponseError(response);
     }
   },
 
@@ -71,7 +72,7 @@ export const NotificationService = {
     });
 
     if (!response.ok) {
-      throw new Error("Error al eliminar la notificación");
+      await handleResponseError(response);
     }
   },
 
@@ -85,7 +86,7 @@ export const NotificationService = {
     });
 
     if (!response.ok) {
-      throw new Error("Error al vaciar las notificaciones");
+      await handleResponseError(response);
     }
   },
 };

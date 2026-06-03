@@ -1,5 +1,6 @@
 import { ServiceFormValues } from "@/schemas/ServiceSchema";
 import { ServiceDetailDTO } from "@/types/Service";
+import { ApiError, handleResponseError } from "@/utils/ApiError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
@@ -10,7 +11,7 @@ export const ServiceService = {
       headers: { "Content-Type": "application/json" , Authorization: `Bearer ${token}`},
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error("Error al crear el servicio");
+    if (!response.ok) await handleResponseError(response);
     return response.json();
   },
   update: async (
@@ -23,7 +24,7 @@ export const ServiceService = {
       headers: { "Content-Type": "application/json" , Authorization: `Bearer ${token}`},
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error("Error al actualizar el servicio");
+    if (!response.ok) await handleResponseError(response);
     return response.json();
   },
   delete: async (id: string, token: string): Promise<void> => {
@@ -31,20 +32,20 @@ export const ServiceService = {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}`}
     });
-    if (!response.ok) throw new Error("Error al eliminar el servicio");
+    if (!response.ok) await handleResponseError(response);
   },
   get: async (): Promise<ServiceDetailDTO[]> => {
     const response = await fetch(`${API_URL}/services/public`, {
       next: { tags: ["services-list"] },
       cache: "no-store",
     });
-    if (!response.ok) throw new Error("Error al obtener los servicios");
+    if (!response.ok) await handleResponseError(response);
     const data = await response.json();
     return data.content || [];
   },
   getById: async (id: string): Promise<ServiceDetailDTO> => {
     const response = await fetch(`${API_URL}/services/public/${id}`);
-    if (!response.ok) throw new Error("Error al obtener el servicio");
+    if (!response.ok) await handleResponseError(response);
     const data = await response.json();
     return data;
   },

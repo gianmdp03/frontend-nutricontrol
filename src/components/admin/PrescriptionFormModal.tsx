@@ -52,7 +52,7 @@ export default function PrescriptionFormModal({
     }
   }, [isOpen, patientId, patientName, reset]);
 
-  const onSubmit = (data: PrescriptionFormValues) => {
+  const onSubmit = (data: any) => {
     setErrorMessage(null);
     setSuccessMessage(null);
 

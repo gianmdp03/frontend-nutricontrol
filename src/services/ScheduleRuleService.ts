@@ -1,5 +1,6 @@
 import { ScheduleRuleFormValues } from "@/schemas/ScheduleRuleSchema";
 import { ScheduleRuleDetailDTO } from "@/types/ScheduleRule";
+import { ApiError, handleResponseError } from "@/utils/ApiError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
@@ -13,7 +14,7 @@ export const ScheduleRuleService = {
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error("Error al crear el horario");
+    if (!response.ok) await handleResponseError(response);
     return response.json();
   },
   update: async (
@@ -26,7 +27,7 @@ export const ScheduleRuleService = {
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error("Error al actualizar el horario");
+    if (!response.ok) await handleResponseError(response);
     return response.json();
   },
   delete: async (id: string, token: string): Promise<void> => {
@@ -36,7 +37,7 @@ export const ScheduleRuleService = {
       },
       method: "DELETE",
     });
-    if (!response.ok) throw new Error("Error al eliminar el horario");
+    if (!response.ok) await handleResponseError(response);
   },
   get: async (token: string): Promise<ScheduleRuleDetailDTO[]> => {
     const response = await fetch(`${API_URL}/schedule-rules`, {
@@ -44,7 +45,7 @@ export const ScheduleRuleService = {
         Authorization: `Bearer ${token}`,
       },
     });
-    if (!response.ok) throw new Error("Error al obtener los horarios");
+    if (!response.ok) await handleResponseError(response);
     const data = await response.json();
     return data.content || [];
   },
@@ -57,7 +58,7 @@ export const ScheduleRuleService = {
         Authorization: `Bearer ${token}`,
       },
     });
-    if (!response.ok) throw new Error("Error al obtener los horarios");
+    if (!response.ok) await handleResponseError(response);
     return response.json();
   },
 };

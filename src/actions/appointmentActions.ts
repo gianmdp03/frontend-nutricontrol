@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { ApiError, handleResponseError } from "@/utils/ApiError";
 
 export async function createAppointmentAction(data: {
   startTime: string;
@@ -14,14 +15,20 @@ export async function createAppointmentAction(data: {
   const token = session?.user?.backendToken;
 
   if (!token) {
-    return { error: "No estás autenticado. Por favor, iniciá sesión." };
+    return { success: false, message: "No estás autenticado. Por favor, iniciá sesión.", error: "No estás autenticado. Por favor, iniciá sesión." };
   }
 
   let response;
   try {
     response = await AppointmentService.createAppointment(data, token);
   } catch (error) {
+    if (error instanceof ApiError) {
+      return { success: false, message: error.message, errors: error.details, error: error.message };
+    }
+    console.error("Error in createAppointmentAction:", error);
     return {
+      success: false,
+      message: "Hubo un problema de conexión con el servidor al crear el turno",
       error: "Hubo un problema de conexión con el servidor al crear el turno",
     };
   }
@@ -29,7 +36,7 @@ export async function createAppointmentAction(data: {
   if (response?.approveLink) {
     redirect(response.approveLink);
   } else {
-    return { error: "No se recibió un link de pago válido" };
+    return { success: false, message: "No se recibió un link de pago válido", error: "No se recibió un link de pago válido" };
   }
 }
 
@@ -38,7 +45,7 @@ export async function confirmPaymentAction(paypalOrderId: string) {
   const token = session?.user?.backendToken;
 
   if (!token) {
-    return { error: "No estás autenticado." };
+    return { success: false, message: "No estás autenticado.", error: "No estás autenticado." };
   }
 
   try {
@@ -56,16 +63,16 @@ export async function confirmPaymentAction(paypalOrderId: string) {
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      return {
-        error:
-          errorData?.message || "Error al confirmar el pago en el servidor.",
-      };
+      await handleResponseError(response);
     }
 
     return { success: true };
   } catch (error) {
-    return { error: "Hubo un problema de conexión al confirmar el pago." };
+    if (error instanceof ApiError) {
+      return { success: false, message: error.message, errors: error.details, error: error.message };
+    }
+    console.error("Error in confirmPaymentAction:", error);
+    return { success: false, message: "Hubo un problema de conexión al confirmar el pago.", error: "Hubo un problema de conexión al confirmar el pago." };
   }
 }
 
@@ -74,7 +81,7 @@ export async function cancelAdminAppointmentAction(id: number, refund: boolean =
   const token = session?.user?.backendToken;
 
   if (!token) {
-    return { error: "No estás autenticado." };
+    return { success: false, message: "No estás autenticado.", error: "No estás autenticado." };
   }
 
   try {
@@ -82,6 +89,10 @@ export async function cancelAdminAppointmentAction(id: number, refund: boolean =
     revalidatePath("/admin/appointments"); 
     return { success: true };
   } catch (error) {
-    return { error: "Hubo un problema al cancelar el turno." };
+    if (error instanceof ApiError) {
+      return { success: false, message: error.message, errors: error.details, error: error.message };
+    }
+    console.error("Error in cancelAdminAppointmentAction:", error);
+    return { success: false, message: "Hubo un problema al cancelar el turno.", error: "Hubo un problema al cancelar el turno." };
   }
 }

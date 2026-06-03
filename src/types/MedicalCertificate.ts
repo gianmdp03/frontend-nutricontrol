@@ -2,7 +2,7 @@ export interface MedicalCertificateRequestDTO {
   patientName: string;
   age: string;
   textareaTexto: string;
-  userId: number;
+  userId?: number | null;
 }
 
 export interface MedicalCertificateDetailDTO {

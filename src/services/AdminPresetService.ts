@@ -1,4 +1,5 @@
 import { AdminPresetDetailDTO, AdminPresetRequestDTO } from "@/types/AdminPreset";
+import { ApiError, handleResponseError } from "@/utils/ApiError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
@@ -15,7 +16,7 @@ export const AdminPresetService = {
       if (response.status === 404) {
         return { id: 0, adminName: "", specialty: "", exequatur: "" };
       }
-      throw new Error("Error al obtener la configuración de preset");
+      await handleResponseError(response);
     }
 
     return response.json();
@@ -35,8 +36,7 @@ export const AdminPresetService = {
     });
 
     if (!response.ok) {
-      const errorMsg = await response.text().catch(() => "");
-      throw new Error(errorMsg || "Error al guardar el preset");
+      await handleResponseError(response);
     }
 
     return response.json();

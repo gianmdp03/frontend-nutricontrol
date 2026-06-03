@@ -10,7 +10,7 @@ export const medicalCertificateSchema = z.object({
   textareaTexto: z
     .string()
     .check(z.minLength(1, "El cuerpo del certificado es obligatorio")),
-  userId: z.number(),
+  userId: z.optional(z.number()),
 });
 
 export type MedicalCertificateFormValues = z.infer<typeof medicalCertificateSchema>;

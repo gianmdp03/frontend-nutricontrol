@@ -1,4 +1,5 @@
 import { ReviewDetailDTO } from "@/types/Review";
+import { ApiError, handleResponseError } from "@/utils/ApiError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
@@ -26,8 +27,7 @@ export const ReviewService = {
     });
 
     if (!response.ok) {
-      const errorMsg = await response.text().catch(() => "");
-      throw new Error(errorMsg || "Error al enviar la reseña");
+      await handleResponseError(response);
     }
 
     return response.json();
@@ -49,7 +49,7 @@ export const ReviewService = {
     );
 
     if (!response.ok) {
-      throw new Error("Error al obtener la lista de reseñas");
+      await handleResponseError(response);
     }
 
     return response.json();

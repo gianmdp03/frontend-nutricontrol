@@ -9,6 +9,7 @@ import { AdminPresetService } from "@/services/AdminPresetService";
 import PatientDocumentsView from "@/components/patient/PatientDocumentsView";
 import { PrescriptionService } from "@/services/PrescriptionService";
 import { MedicalCertificateService } from "@/services/MedicalCertificateService";
+import { NutritionalPlanService } from "@/services/NutritionalPlanService";
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
@@ -22,6 +23,7 @@ export default async function ProfilePage() {
   let presetData = undefined;
   let prescriptions: any[] = [];
   let certificates: any[] = [];
+  let nutritionalPlans: any[] = [];
 
   if (role === "ROLE_ADMIN") {
     try {
@@ -35,6 +37,7 @@ export default async function ProfilePage() {
     try {
       prescriptions = await PrescriptionService.getPatientPrescriptions(token);
       certificates = await MedicalCertificateService.getPatientMedicalCertificates(token);
+      nutritionalPlans = await NutritionalPlanService.getPatientNutritionalPlans(token);
     } catch (e) {
       console.error("Error loading patient clinical documents in ProfilePage:", e);
     }
@@ -178,6 +181,7 @@ export default async function ProfilePage() {
             <PatientDocumentsView
               prescriptions={prescriptions}
               certificates={certificates}
+              nutritionalPlans={nutritionalPlans}
               token={token}
             />
           )}

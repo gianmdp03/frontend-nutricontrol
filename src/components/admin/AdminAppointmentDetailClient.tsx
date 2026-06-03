@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import PatientMedicalRecordModal from "../ui/PatientMedicalRecordModal";
 import PrescriptionFormModal from "./PrescriptionFormModal";
 import MedicalCertificateFormModal from "./MedicalCertificateFormModal";
+import NutritionalPlanFormModal from "./NutritionalPlanFormModal";
 
 interface AdminAppointmentDetailClientProps {
   appointment: any;
@@ -15,6 +16,7 @@ export default function AdminAppointmentDetailClient({ appointment }: AdminAppoi
   const [isRecordOpen, setIsRecordOpen] = useState(false);
   const [isPrescriptionOpen, setIsPrescriptionOpen] = useState(false);
   const [isCertificateOpen, setIsCertificateOpen] = useState(false);
+  const [isNutritionalPlanOpen, setIsNutritionalPlanOpen] = useState(false);
 
   const isCancelled =
     appointment.appointmentStatus === "CANCELLED" ||
@@ -230,6 +232,19 @@ export default function AdminAppointmentDetailClient({ appointment }: AdminAppoi
                   </span>
                   <span>+</span>
                 </button>
+
+                <button
+                  onClick={() => setIsNutritionalPlanOpen(true)}
+                  className="w-full flex items-center justify-between p-3.5 bg-emerald-50/50 hover:bg-emerald-50 text-emerald-700 font-bold rounded-2xl text-sm border border-emerald-100/30 transition-all hover:translate-x-1 cursor-pointer"
+                >
+                  <span className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    Emitir Plan Nutricional
+                  </span>
+                  <span>+</span>
+                </button>
               </div>
             </div>
           )}
@@ -258,6 +273,13 @@ export default function AdminAppointmentDetailClient({ appointment }: AdminAppoi
           <MedicalCertificateFormModal
             isOpen={isCertificateOpen}
             onClose={() => setIsCertificateOpen(false)}
+            patientId={patientId}
+            patientName={patientName}
+          />
+
+          <NutritionalPlanFormModal
+            isOpen={isNutritionalPlanOpen}
+            onClose={() => setIsNutritionalPlanOpen(false)}
             patientId={patientId}
             patientName={patientName}
           />
