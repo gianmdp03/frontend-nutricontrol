@@ -3,12 +3,14 @@
 import React, { useState } from "react";
 import ReviewModal from "./ReviewModal";
 
+import { Appointment } from "@/types/Appointment";
+
 export const formatTime = (timeStr: string) => {
   return timeStr.slice(0, 5);
 };
 
 type Props = {
-  appointment: any;
+  appointment: Appointment;
   isToday: boolean;
 };
 
@@ -148,6 +150,7 @@ export function PatientAppointmentCard({ appointment, isToday }: Props) {
         isOpen={isReviewModalOpen}
         onClose={() => setIsReviewModalOpen(false)}
         doctorName={doctorName}
+        appointmentId={appointment.id}
       />
 
       {/* Botón directo de Videollamada si el turno está confirmado y no está colapsado */}

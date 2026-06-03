@@ -10,6 +10,9 @@ import PatientDocumentsView from "@/components/patient/documents/PatientDocument
 import { PrescriptionService } from "@/services/PrescriptionService";
 import { MedicalCertificateService } from "@/services/MedicalCertificateService";
 import { NutritionalPlanService } from "@/services/NutritionalPlanService";
+import { PrescriptionDetailDTO } from "@/types/Prescription";
+import { MedicalCertificateDetailDTO } from "@/types/MedicalCertificate";
+import { NutritionalPlanDetailDTO } from "@/types/NutritionalPlan";
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
@@ -21,9 +24,9 @@ export default async function ProfilePage() {
   const { name, email, role } = session.user;
   const token = session.user.backendToken || "";
   let presetData = undefined;
-  let prescriptions: any[] = [];
-  let certificates: any[] = [];
-  let nutritionalPlans: any[] = [];
+  let prescriptions: PrescriptionDetailDTO[] = [];
+  let certificates: MedicalCertificateDetailDTO[] = [];
+  let nutritionalPlans: NutritionalPlanDetailDTO[] = [];
 
   if (role === "ROLE_ADMIN") {
     try {
@@ -36,10 +39,20 @@ export default async function ProfilePage() {
   if (role === "ROLE_PATIENT") {
     try {
       prescriptions = await PrescriptionService.getPatientPrescriptions(token);
+    } catch (e) {
+      console.error("Error loading patient prescriptions in ProfilePage:", e);
+    }
+
+    try {
       certificates = await MedicalCertificateService.getPatientMedicalCertificates(token);
+    } catch (e) {
+      console.error("Error loading patient medical certificates in ProfilePage:", e);
+    }
+
+    try {
       nutritionalPlans = await NutritionalPlanService.getPatientNutritionalPlans(token);
     } catch (e) {
-      console.error("Error loading patient clinical documents in ProfilePage:", e);
+      console.error("Error loading patient nutritional plans in ProfilePage:", e);
     }
   }
   const userName = name || "Usuario";

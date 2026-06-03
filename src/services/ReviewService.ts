@@ -1,4 +1,4 @@
-import { ReviewDetailDTO } from "@/types/Review";
+import { ReviewDetailDTO, ReviewRequestDTO } from "@/types/Review";
 import { ApiError, handleResponseError } from "@/utils/ApiError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
@@ -14,7 +14,7 @@ export interface PaginatedReviews {
 export const ReviewService = {
   // POST /api/reviews
   addReview: async (
-    data: { score: number; comment: string },
+    data: ReviewRequestDTO,
     token: string,
   ): Promise<ReviewDetailDTO> => {
     const response = await fetch(`${API_URL}/reviews`, {

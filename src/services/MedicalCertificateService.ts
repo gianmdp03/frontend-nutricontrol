@@ -45,22 +45,7 @@ export const MedicalCertificateService = {
   },
 
   getPatientMedicalCertificates: async (token: string): Promise<MedicalCertificateDetailDTO[]> => {
-    try {
-      const response = await fetch(`${API_URL}/medical-certificates/user`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        return data.content || data || [];
-      }
-      console.warn(`Failed fetching from /medical-certificates/user, status: ${response.status}`);
-    } catch (e) {
-      console.warn("Failed fetching from /medical-certificates/user, trying generic", e);
-    }
-
-    const response = await fetch(`${API_URL}/medical-certificates`, {
+    const response = await fetch(`${API_URL}/medical-certificates/user`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

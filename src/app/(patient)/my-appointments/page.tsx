@@ -3,6 +3,7 @@ import { PatientAppointmentCard } from "@/components/patient/my-appointments/Pat
 import { AppointmentService } from "@/services/AppointmentService";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { Appointment } from "@/types/Appointment";
 
 export const formatDate = (dateStr: string) => {
   const options: Intl.DateTimeFormatOptions = {
@@ -125,7 +126,7 @@ export default async function MyAppointments() {
       acc[curr.date].push(curr);
       return acc;
     },
-    {} as Record<string, any[]>,
+    {} as Record<string, Appointment[]>,
   );
 
   // Separar hoy del resto
@@ -194,7 +195,7 @@ export default async function MyAppointments() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-            {todayAppointments.map((app: any) => (
+            {todayAppointments.map((app: Appointment) => (
               <PatientAppointmentCard
                 key={app.id}
                 appointment={app}
@@ -236,7 +237,7 @@ export default async function MyAppointments() {
 
                   {/* Tarjetas del día */}
                   <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    {groupedAppointments[date].map((app: any) => (
+                    {groupedAppointments[date].map((app: Appointment) => (
                       <PatientAppointmentCard
                         key={app.id}
                         appointment={app}

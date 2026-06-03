@@ -9,8 +9,10 @@ import MedicalCertificateFormModal from "@/components/admin/documents/MedicalCer
 import NutritionalPlanFormModal from "@/components/admin/documents/NutritionalPlanFormModal";
 import { startAppointmentAction, completeAppointmentAction } from "@/actions/appointmentActions";
 
+import { Appointment } from "@/types/Appointment";
+
 interface AdminAppointmentDetailClientProps {
-  appointment: any;
+  appointment: Appointment;
 }
 
 export default function AdminAppointmentDetailClient({ appointment: initialAppointment }: AdminAppointmentDetailClientProps) {

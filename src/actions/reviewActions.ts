@@ -5,8 +5,9 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { revalidatePath } from "next/cache";
 import { ApiError } from "@/utils/ApiError";
+import { ReviewRequestDTO } from "@/types/Review";
 
-export async function addReviewAction(data: { score: number; comment: string }) {
+export async function addReviewAction(data: ReviewRequestDTO) {
   const session = await getServerSession(authOptions);
   const token = session?.user?.backendToken;
 

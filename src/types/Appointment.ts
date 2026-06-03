@@ -1,3 +1,5 @@
+import { UserDetailDTO } from "./User";
+
 export interface Admin {
   id: number;
   name: string;
@@ -13,12 +15,16 @@ export interface Appointment {
   startTime: string;
   endTime: string;
   admin: Admin;
+  user?: UserDetailDTO;
   appointmentStatus:
     | "CONFIRMED"
     | "CANCELLED"
     | "PENDING"
     | "COMPLETED"
     | "CANCELLED_REFUND"
-    | "CANCELLED_WITHOUT_REFUND";
+    | "CANCELLED_WITHOUT_REFUND"
+    | "IN_PROGRESS"
+    | "FINISHED"
+    | "USER_DIDNT_COME";
   meetingLink?: string;
 }

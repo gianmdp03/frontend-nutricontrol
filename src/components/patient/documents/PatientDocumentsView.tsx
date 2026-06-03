@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
+import { PrescriptionDetailDTO } from "@/types/Prescription";
+import { MedicalCertificateDetailDTO } from "@/types/MedicalCertificate";
+import { NutritionalPlanDetailDTO } from "@/types/NutritionalPlan";
 
 interface PatientDocumentsViewProps {
-  prescriptions: any[];
-  certificates: any[];
-  nutritionalPlans?: any[];
+  prescriptions: PrescriptionDetailDTO[];
+  certificates: MedicalCertificateDetailDTO[];
+  nutritionalPlans?: NutritionalPlanDetailDTO[];
   token: string;
 }
 

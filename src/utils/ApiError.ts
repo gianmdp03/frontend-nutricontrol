@@ -1,8 +1,10 @@
+export type ApiErrorDetails = Record<string, string> | string | null | unknown;
+
 export class ApiError extends Error {
   public statusCode: number;
-  public details?: any;
+  public details?: ApiErrorDetails;
 
-  constructor(statusCode: number, message: string, details?: any) {
+  constructor(statusCode: number, message: string, details?: ApiErrorDetails) {
     super(message);
     this.name = 'ApiError';
     this.statusCode = statusCode;
@@ -13,7 +15,7 @@ export class ApiError extends Error {
 export async function handleResponseError(response: Response): Promise<never> {
   const statusCode = response.status;
   let message = `Error de servidor (${statusCode})`;
-  let details: any = null;
+  let details: ApiErrorDetails = null;
 
   try {
     const errorJson = await response.json();

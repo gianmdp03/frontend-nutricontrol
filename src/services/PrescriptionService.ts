@@ -45,22 +45,7 @@ export const PrescriptionService = {
   },
 
   getPatientPrescriptions: async (token: string): Promise<PrescriptionDetailDTO[]> => {
-    try {
-      const response = await fetch(`${API_URL}/prescriptions/user`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        return data.content || data || [];
-      }
-      console.warn(`Failed fetching from /prescriptions/user, status: ${response.status}`);
-    } catch (e) {
-      console.warn("Failed fetching from /prescriptions/user, trying generic", e);
-    }
-
-    const response = await fetch(`${API_URL}/prescriptions`, {
+    const response = await fetch(`${API_URL}/prescriptions/user`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

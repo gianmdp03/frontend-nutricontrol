@@ -5,6 +5,10 @@ import { ScheduleRuleService } from "@/services/ScheduleRuleService";
 import { ServiceService } from "@/services/ServiceService";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { Appointment } from "@/types/Appointment";
+import { ServiceDetailDTO } from "@/types/Service";
+import { ScheduleRuleDetailDTO } from "@/types/ScheduleRule";
+import { ScheduleExceptionDetailDTO } from "@/types/ScheduleException";
 
 // Funciones de formato consistentes con el resto de la aplicación
 const formatDate = (dateStr: string) => {
@@ -30,10 +34,10 @@ export default async function AdminDashboard() {
   const fullName = userLastName ? `${userName} ${userLastName}` : userName;
   const adminTz = session?.user?.timezone || "America/Santo_Domingo";
 
-  let appointments: any[] = [];
-  let services: any[] = [];
-  let rules: any[] = [];
-  let exceptions: any[] = [];
+  let appointments: Appointment[] = [];
+  let services: ServiceDetailDTO[] = [];
+  let rules: ScheduleRuleDetailDTO[] = [];
+  let exceptions: ScheduleExceptionDetailDTO[] = [];
   let hasError = false;
 
   // Obtenemos los datos de forma robusta con manejo de errores individual

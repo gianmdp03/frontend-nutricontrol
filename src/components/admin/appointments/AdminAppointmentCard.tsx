@@ -5,6 +5,8 @@ import { cancelAdminAppointmentAction } from "@/actions/appointmentActions";
 import PatientMedicalRecordModal from "@/components/admin/documents/PatientMedicalRecordModal";
 import Link from "next/link";
 
+import { Appointment } from "@/types/Appointment";
+
 export const formatTime = (timeStr: string) => {
   return timeStr.slice(0, 5);
 };
@@ -23,7 +25,7 @@ const isMoreThan24Hours = (dateStr: string, timeStr: string) => {
 };
 
 type Props = {
-  appointment: any;
+  appointment: Appointment;
   isToday: boolean;
 };
 

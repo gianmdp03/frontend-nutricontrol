@@ -101,7 +101,7 @@ export default function NutritionalPlanFormModal({
   };
 
   const getDayErrors = (dayKey: string) => {
-    const weeklyErrors = errors.weeklyMenu as any;
+    const weeklyErrors = errors.weeklyMenu as Record<string, { breakfast?: { message?: string }; lunch?: { message?: string }; dinner?: { message?: string } }> | undefined;
     return weeklyErrors?.[dayKey];
   };
 

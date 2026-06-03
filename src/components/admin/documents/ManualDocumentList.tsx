@@ -5,6 +5,11 @@ import { useSession } from "next-auth/react";
 import { MedicalCertificateService } from "@/services/MedicalCertificateService";
 import { PrescriptionService } from "@/services/PrescriptionService";
 import { NutritionalPlanService } from "@/services/NutritionalPlanService";
+import { MedicalCertificateDetailDTO } from "@/types/MedicalCertificate";
+import { PrescriptionDetailDTO } from "@/types/Prescription";
+import { NutritionalPlanDetailDTO } from "@/types/NutritionalPlan";
+
+type ManualDocument = MedicalCertificateDetailDTO | PrescriptionDetailDTO | NutritionalPlanDetailDTO;
 
 interface ManualDocumentListProps {
   type: "certificate" | "prescription" | "nutritional-plan";
@@ -13,7 +18,7 @@ interface ManualDocumentListProps {
 
 export default function ManualDocumentList({ type, refreshKey }: ManualDocumentListProps) {
   const { data: session } = useSession();
-  const [documents, setDocuments] = useState<any[]>([]);
+  const [documents, setDocuments] = useState<ManualDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [downloadingId, setDownloadingId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,7 +29,7 @@ export default function ManualDocumentList({ type, refreshKey }: ManualDocumentL
 
     setLoading(true);
     try {
-      let data: any[] = [];
+      let data: ManualDocument[] = [];
       if (type === "certificate") {
         data = await MedicalCertificateService.getManualMedicalCertificates(token);
       } else if (type === "prescription") {
@@ -34,9 +39,9 @@ export default function ManualDocumentList({ type, refreshKey }: ManualDocumentL
       }
       
       // Sort newest first
-      data.sort((a: any, b: any) => {
-        const dateA = new Date(a.date || a.dateTime || 0).getTime();
-        const dateB = new Date(b.date || b.dateTime || 0).getTime();
+      data.sort((a: ManualDocument, b: ManualDocument) => {
+        const dateA = new Date(a.date || (a as { dateTime?: string }).dateTime || 0).getTime();
+        const dateB = new Date(b.date || (b as { dateTime?: string }).dateTime || 0).getTime();
         return dateB - dateA;
       });
 
@@ -211,7 +216,7 @@ export default function ManualDocumentList({ type, refreshKey }: ManualDocumentL
 
                   {/* Date */}
                   <td className="px-6 py-4 text-slate-400 font-medium">
-                    {formatDate(doc.date || doc.dateTime)}
+                    {formatDate(doc.date || (doc as { dateTime?: string }).dateTime)}
                   </td>
 
                   {/* PDF Download Button */}

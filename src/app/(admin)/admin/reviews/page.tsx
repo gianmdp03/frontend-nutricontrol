@@ -3,6 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { ReviewService } from "@/services/ReviewService";
 import Link from "next/link";
 import React from "react";
+import { ReviewDetailDTO } from "@/types/Review";
 
 // Utilidad para formatear fechas
 const formatDate = (dateStr?: string) => {
@@ -44,13 +45,13 @@ export default async function AdminReviewsPage() {
   const session = await getServerSession(authOptions);
   const token = session?.user?.backendToken || "";
 
-  let reviews: any[] = [];
+  let reviews: ReviewDetailDTO[] = [];
   let errorMsg = "";
 
   try {
     const data = await ReviewService.listAdminReviews(token, 0, 100);
     reviews = data.content || [];
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error al cargar reseñas en admin page:", error);
     errorMsg = "No se pudieron recuperar las valoraciones del servidor.";
   }
@@ -144,7 +145,7 @@ export default async function AdminReviewsPage() {
             
             {reviews.length > 0 ? (
               <div className="space-y-4">
-                {reviews.map((rev: any, index: number) => (
+                {reviews.map((rev: ReviewDetailDTO, index: number) => (
                   <div
                     key={rev.id || index}
                     className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4"

@@ -6,6 +6,7 @@ export interface ReviewDetailDTO {
 }
 
 export interface ReviewRequestDTO {
+  appointmentId: number;
   score: number;
   comment: string;
 }

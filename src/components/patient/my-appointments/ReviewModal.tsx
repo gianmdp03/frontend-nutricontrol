@@ -8,9 +8,10 @@ interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   doctorName: string;
+  appointmentId: number;
 }
 
-export default function ReviewModal({ isOpen, onClose, doctorName }: ReviewModalProps) {
+export default function ReviewModal({ isOpen, onClose, doctorName, appointmentId }: ReviewModalProps) {
   const [score, setScore] = useState<number>(5);
   const [hoverScore, setHoverScore] = useState<number | null>(null);
   const [comment, setComment] = useState("");
@@ -35,7 +36,7 @@ export default function ReviewModal({ isOpen, onClose, doctorName }: ReviewModal
       return;
     }
 
-    const res = await addReviewAction({ score, comment });
+    const res = await addReviewAction({ appointmentId, score, comment });
     if (res.success) {
       setSuccess(true);
       setTimeout(() => {

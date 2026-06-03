@@ -60,11 +60,11 @@ export const authOptions: NextAuthOptions = {
               body: JSON.stringify({
                 email: user.email,
                 name:
-                  (profile as any)?.given_name ||
+                  profile?.given_name ||
                   user.name?.split(" ")[0] ||
                   "Paciente",
                 lastname:
-                  (profile as any)?.family_name ||
+                  profile?.family_name ||
                   user.name?.split(" ").slice(1).join(" ") ||
                   "",
                 picture: user.image,

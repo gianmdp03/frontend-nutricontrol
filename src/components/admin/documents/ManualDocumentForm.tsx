@@ -1,23 +1,27 @@
 "use client";
 
 import React, { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+
+import { ZodMiniType } from "zod/mini";
+
+export interface ManualDocumentFormValues {
+  patientName: string;
+  age: string;
+  textareaTexto: string;
+  userId?: number | null;
+}
 
 interface ManualDocumentFormProps {
   title: string;
   subtitle: string;
   textareaLabel: string;
   textareaPlaceholder: string;
-  schema: any;
-  onSubmitAction: (data: {
-    patientName: string;
-    age: string;
-    textareaTexto: string;
-    userId?: number | null;
-  }) => Promise<{ success?: boolean; error?: string; data?: any }>;
+  schema: ZodMiniType<ManualDocumentFormValues>;
+  onSubmitAction: (data: ManualDocumentFormValues) => Promise<{ success?: boolean; error?: string; data?: unknown }>;
   successRedirectUrl?: string;
   buttonLabel: string;
   onSuccess?: () => void;
@@ -44,13 +48,8 @@ export default function ManualDocumentForm({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<{
-    patientName: string;
-    age: string;
-    textareaTexto: string;
-    userId?: number | null;
-  }>({
-    resolver: zodResolver(schema),
+  } = useForm<ManualDocumentFormValues>({
+    resolver: zodResolver(schema as unknown as Parameters<typeof zodResolver>[0]) as unknown as Resolver<ManualDocumentFormValues, unknown>,
     defaultValues: {
       patientName: "",
       age: "",
@@ -59,7 +58,7 @@ export default function ManualDocumentForm({
     },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: ManualDocumentFormValues) => {
     setErrorMessage(null);
     setSuccessMessage(null);
 

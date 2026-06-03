@@ -52,7 +52,7 @@ export default function MedicalCertificateFormModal({
     }
   }, [isOpen, patientId, patientName, reset]);
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: MedicalCertificateFormValues) => {
     setErrorMessage(null);
     setSuccessMessage(null);
 

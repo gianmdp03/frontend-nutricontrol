@@ -32,7 +32,7 @@ export default function ManualNutritionalPlanPage() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<any>({
+  } = useForm<NutritionalPlanFormValues>({
     resolver: zodResolver(nutritionalPlanSchema),
     defaultValues: {
       patientName: "",
@@ -51,7 +51,7 @@ export default function ManualNutritionalPlanPage() {
     },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: NutritionalPlanFormValues) => {
     setErrorMessage(null);
     setSuccessMessage(null);
 
@@ -77,7 +77,7 @@ export default function ManualNutritionalPlanPage() {
 
   // Safe checks for errors in weeklyMenu
   const getDayErrors = (dayKey: string) => {
-    const weeklyErrors = errors.weeklyMenu as any;
+    const weeklyErrors = errors.weeklyMenu as Record<string, { breakfast?: { message?: string }; lunch?: { message?: string }; dinner?: { message?: string } }> | undefined;
     return weeklyErrors?.[dayKey];
   };
 
