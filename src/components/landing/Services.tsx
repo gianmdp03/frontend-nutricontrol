@@ -3,7 +3,7 @@ import ServiceCard from "@/components/admin/services/ServiceCard";
 import { ServiceService } from "@/services/ServiceService";
 import { ServiceDetailDTO } from "@/types/Service";
 const Services = async () => {
-  const services:ServiceDetailDTO[] = await ServiceService.get();
+  const services: ServiceDetailDTO[] = await ServiceService.get();
 
   return (
     <ScrollAnimation>
@@ -24,14 +24,7 @@ const Services = async () => {
               key={service.id}
               name={service.name}
               description={service.description}
-            >
-              <a
-                href="#"
-                className="text-rose-500 text-sm font-medium hover:underline"
-              >
-                Ver detalles →
-              </a>
-            </ServiceCard>
+            ></ServiceCard>
           ))}
         </div>
       </section>

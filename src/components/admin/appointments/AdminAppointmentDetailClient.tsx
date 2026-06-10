@@ -7,6 +7,7 @@ import PatientMedicalRecordModal from "@/components/admin/documents/PatientMedic
 import PrescriptionFormModal from "@/components/admin/documents/PrescriptionFormModal";
 import MedicalCertificateFormModal from "@/components/admin/documents/MedicalCertificateFormModal";
 import NutritionalPlanFormModal from "@/components/admin/documents/NutritionalPlanFormModal";
+import MedicalHistoryModal from "@/components/admin/documents/MedicalHistoryModal";
 import { startAppointmentAction, completeAppointmentAction } from "@/actions/appointmentActions";
 
 import { Appointment } from "@/types/Appointment";
@@ -24,6 +25,7 @@ export default function AdminAppointmentDetailClient({ appointment: initialAppoi
   const [isPrescriptionOpen, setIsPrescriptionOpen] = useState(false);
   const [isCertificateOpen, setIsCertificateOpen] = useState(false);
   const [isNutritionalPlanOpen, setIsNutritionalPlanOpen] = useState(false);
+  const [isMedicalHistoryOpen, setIsMedicalHistoryOpen] = useState(false);
 
   const isCancelled =
     appointment.appointmentStatus === "CANCELLED" ||
@@ -360,6 +362,19 @@ export default function AdminAppointmentDetailClient({ appointment: initialAppoi
                   </span>
                   <span>+</span>
                 </button>
+
+                <button
+                  onClick={() => setIsMedicalHistoryOpen(true)}
+                  className="w-full flex items-center justify-between p-3.5 bg-blue-50/50 hover:bg-blue-50 text-blue-700 font-bold rounded-2xl text-sm border border-blue-100/30 transition-all hover:translate-x-1 cursor-pointer"
+                >
+                  <span className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Historia Médica
+                  </span>
+                  <span>+</span>
+                </button>
               </div>
             </div>
           )}
@@ -395,6 +410,13 @@ export default function AdminAppointmentDetailClient({ appointment: initialAppoi
           <NutritionalPlanFormModal
             isOpen={isNutritionalPlanOpen}
             onClose={() => setIsNutritionalPlanOpen(false)}
+            patientId={patientId}
+            patientName={patientName}
+          />
+
+          <MedicalHistoryModal
+            isOpen={isMedicalHistoryOpen}
+            onClose={() => setIsMedicalHistoryOpen(false)}
             patientId={patientId}
             patientName={patientName}
           />
