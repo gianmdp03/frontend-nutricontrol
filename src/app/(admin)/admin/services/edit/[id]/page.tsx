@@ -34,7 +34,10 @@ const EditServicePage = () => {
       alert("Debes iniciar sesión para realizar esta acción.");
       return;
     }
-    await updateServiceAction(serviceId, data, token);
+    const result = await updateServiceAction(serviceId, data, token);
+    if (result?.error) {
+      alert(result.error);
+    }
   };
 
   if (status === "loading") {

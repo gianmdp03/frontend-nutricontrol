@@ -1,5 +1,5 @@
 import { ApiError, handleResponseError } from "@/utils/ApiError";
-import { Appointment } from "@/types/Appointment";
+import { Appointment, AppointmentType } from "@/types/Appointment";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
@@ -23,7 +23,7 @@ export const AppointmentService = {
     return data || [];
   },
   createAppointment: async (
-    data: { startTime: string; adminId: string },
+    data: { startTime: string; adminId: string; appointmentType: AppointmentType },
     token: string,
   ): Promise<{ paypalOrderId: string; approveLink: string }> => {
     const response = await fetch(`${API_URL}/appointments`, {

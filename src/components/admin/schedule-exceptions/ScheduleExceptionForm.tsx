@@ -1,4 +1,5 @@
 import FormInput from "@/components/ui/FormInput";
+import FormTimePicker from "@/components/ui/FormTimePicker";
 import {
   ScheduleExceptionFormValues,
   scheduleExceptionSchema,
@@ -16,6 +17,7 @@ const ScheduleExceptionForm = ({ initialData, onSubmit, title }: Props) => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<ScheduleExceptionFormValues>({
     resolver: zodResolver(scheduleExceptionSchema),
@@ -36,17 +38,17 @@ const ScheduleExceptionForm = ({ initialData, onSubmit, title }: Props) => {
         error={errors.startTime?.message}
       />
 
-      <FormInput
-        type="time"
+      <FormTimePicker
         label="Hora de comienzo"
-        registration={register("startTime")}
-        error={errors.endTime?.message}
+        name="startTime"
+        control={control}
+        error={errors.startTime?.message}
       />
 
-      <FormInput
-        type="time"
+      <FormTimePicker
         label="Hora de finalización"
-        registration={register("endTime")}
+        name="endTime"
+        control={control}
         error={errors.endTime?.message}
       />
 

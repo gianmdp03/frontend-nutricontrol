@@ -112,6 +112,15 @@ export function PatientAppointmentCard({ appointment, isToday }: Props) {
               {appointment.appointmentStatus === "CONFIRMED" ? "Confirmado" : "Pendiente"}
             </span>
           )}
+          {appointment.appointmentType === "NUTRITIONAL" ? (
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+              Nutricional
+            </span>
+          ) : appointment.appointmentType === "CONSULTATION" ? (
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+              Consulta General
+            </span>
+          ) : null}
         </div>
 
         <button

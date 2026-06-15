@@ -1,5 +1,6 @@
 import FormInput from "@/components/ui/FormInput";
 import FormSelect from "@/components/ui/FormSelect";
+import FormTimePicker from "@/components/ui/FormTimePicker";
 import {
   dayOfWeekEnum,
   ScheduleRuleFormValues,
@@ -28,6 +29,7 @@ const ScheduleRuleForm = ({ initialData, onSubmit, title }: Props) => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<ScheduleRuleFormValues>({
     resolver: zodResolver(scheduleRuleSchema),
@@ -48,17 +50,17 @@ const ScheduleRuleForm = ({ initialData, onSubmit, title }: Props) => {
         options={dayOfWeekOptions}
       />
 
-      <FormInput
-        type="time"
+      <FormTimePicker
         label="Hora de comienzo"
-        registration={register("startTime")}
+        name="startTime"
+        control={control}
         error={errors.startTime?.message}
       />
 
-      <FormInput
-        type="time"
+      <FormTimePicker
         label="Hora de fin"
-        registration={register("endTime")}
+        name="endTime"
+        control={control}
         error={errors.endTime?.message}
       />
       <button

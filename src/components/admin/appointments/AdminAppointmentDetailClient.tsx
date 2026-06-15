@@ -114,6 +114,25 @@ export default function AdminAppointmentDetailClient({ appointment: initialAppoi
     );
   };
 
+  // Helper para renderizar el tipo de consulta
+  const renderTypeBadge = () => {
+    if (appointment.appointmentType === "NUTRITIONAL") {
+      return (
+        <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-xs">
+          Nutricional
+        </span>
+      );
+    }
+    if (appointment.appointmentType === "CONSULTATION") {
+      return (
+        <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100 shadow-xs">
+          Consulta General
+        </span>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="space-y-8 max-w-5xl mx-auto p-4 md:p-6 min-h-screen">
       {/* Volver y Título */}
@@ -134,6 +153,7 @@ export default function AdminAppointmentDetailClient({ appointment: initialAppoi
         </div>
         <div className="flex items-center gap-2.5">
           <span className="text-xs text-slate-400 font-bold">Ref: #{appointment.id}</span>
+          {renderTypeBadge()}
           {renderStatusBadge()}
         </div>
       </div>

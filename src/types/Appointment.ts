@@ -1,5 +1,7 @@
 import { UserDetailDTO } from "./User";
 
+export type AppointmentType = "NUTRITIONAL" | "CONSULTATION";
+
 export interface Admin {
   id: number;
   name: string;
@@ -27,4 +29,5 @@ export interface Appointment {
     | "FINISHED"
     | "USER_DIDNT_COME";
   meetingLink?: string;
+  appointmentType: AppointmentType;
 }

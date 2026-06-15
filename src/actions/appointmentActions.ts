@@ -7,10 +7,12 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { ApiError } from "@/utils/ApiError";
+import { AppointmentType } from "@/types/Appointment";
 
 export async function createAppointmentAction(data: {
   startTime: string;
   adminId: string;
+  appointmentType: AppointmentType;
 }) {
   const session = await getServerSession(authOptions);
   const token = session?.user?.backendToken;
