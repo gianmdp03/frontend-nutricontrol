@@ -52,17 +52,25 @@ export default function AdminAppointmentDetailClient({ appointment: initialAppoi
 
   // --- HANDLERS DEL CICLO DE VIDA DEL TURNO ---
   const handleStart = async () => {
+    // Abrir una pestaña en blanco inmediatamente sincronizada con el click del usuario para evitar bloqueador de popups
+    const newWindow = typeof window !== "undefined" ? window.open("about:blank", "_blank") : null;
+
     try {
       setLoading(true);
       const updated = await startAppointmentAction(appointment.id);
       setAppointment(updated);
       
-      // Abre el meet automáticamente
-      if (updated.meetingLink) {
-        window.open(updated.meetingLink, '_blank');
+      // Redirigir la pestaña al enlace de la videollamada
+      if (updated.meetingLink && newWindow) {
+        newWindow.location.href = updated.meetingLink;
+      } else if (newWindow) {
+        newWindow.close();
       }
     } catch (error) {
       console.error("Error al iniciar el turno:", error);
+      if (newWindow) {
+        newWindow.close();
+      }
     } finally {
       setLoading(false);
     }
@@ -244,14 +252,14 @@ export default function AdminAppointmentDetailClient({ appointment: initialAppoi
                   </p>
                 </div>
 
-                {appointment.meetingLink ? (
+                {appointment.meetingLink || appointment.appointmentStatus === "CONFIRMED" ? (
                   <div className="pt-2 flex flex-col sm:flex-row gap-3">
                     
                     {appointment.appointmentStatus === "CONFIRMED" && (
                       <button
                         onClick={handleStart}
                         disabled={loading}
-                        className="inline-flex justify-center items-center gap-2 px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg active:scale-98 disabled:opacity-70"
+                        className="inline-flex justify-center items-center gap-2 px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg active:scale-98 disabled:opacity-70 cursor-pointer"
                       >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
@@ -263,18 +271,20 @@ export default function AdminAppointmentDetailClient({ appointment: initialAppoi
 
                     {appointment.appointmentStatus === "IN_PROGRESS" && (
                       <>
-                        <a
-                          href={appointment.meetingLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex justify-center items-center gap-2 px-6 py-3 bg-white text-rose-600 font-bold rounded-xl text-sm border border-rose-200 transition-all shadow-sm hover:shadow-md hover:bg-rose-50 active:scale-98"
-                        >
-                          Reabrir Meet
-                        </a>
+                        {appointment.meetingLink && (
+                          <a
+                            href={appointment.meetingLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex justify-center items-center gap-2 px-6 py-3 bg-white text-rose-600 font-bold rounded-xl text-sm border border-rose-200 transition-all shadow-sm hover:shadow-md hover:bg-rose-50 active:scale-98"
+                          >
+                            Reabrir Meet
+                          </a>
+                        )}
                         <button
                           onClick={handleComplete}
                           disabled={loading}
-                          className="inline-flex justify-center items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg active:scale-98 disabled:opacity-70"
+                          className="inline-flex justify-center items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg active:scale-98 disabled:opacity-70 cursor-pointer"
                         >
                           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

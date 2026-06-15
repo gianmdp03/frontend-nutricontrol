@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import { AppointmentSlot } from "@/services/AppointmentService";
 import { createAppointmentAction } from "@/actions/appointmentActions";
 
+const APPOINTMENT_PRICE = process.env.NEXT_PUBLIC_APPOINTMENT_PRICE || "20";
+
 interface Props {
   doctorsList: { value: string; label: string }[];
   availableSlots: AppointmentSlot[];
@@ -24,6 +26,7 @@ export default function AppointmentBooking({
   useEffect(() => {
     setMounted(true);
   }, []);
+
   const {
     register,
     handleSubmit,
@@ -45,6 +48,18 @@ export default function AppointmentBooking({
   const selectedDate = watch("date");
   const selectedTime = watch("startTime");
   const selectedType = watch("appointmentType");
+
+  const selectedDoctorLabel = doctorsList.find((d) => d.value === selectedAdmin)?.label || "";
+
+  const getSelectedDateLabel = (dateStr: string) => {
+    if (!dateStr) return "";
+    return new Date(dateStr).toLocaleDateString("es-AR", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      timeZone: "UTC",
+    });
+  };
 
   useEffect(() => {
     setValue("date", "");
@@ -258,6 +273,45 @@ export default function AppointmentBooking({
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* 4. SECCIÓN: Resumen y Precio */}
+      {mounted && selectedAdmin && selectedType && selectedDate && selectedTime && (
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 bg-slate-50 border border-slate-200/80 rounded-2xl p-6 space-y-4 shadow-sm">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 border-b border-slate-200/60 pb-2">
+            Resumen del Turno
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-700">
+            <div className="space-y-1">
+              <span className="text-slate-400 block text-xs font-medium">Profesional</span>
+              <span className="font-semibold text-slate-900">{selectedDoctorLabel}</span>
+            </div>
+            <div className="space-y-1">
+              <span className="text-slate-400 block text-xs font-medium">Tipo de Consulta</span>
+              <span className="font-semibold text-slate-900">
+                {selectedType === "NUTRITIONAL" ? "Consulta Nutricional" : "Consulta General"}
+              </span>
+            </div>
+            <div className="space-y-1">
+              <span className="text-slate-400 block text-xs font-medium">Fecha</span>
+              <span className="font-semibold text-slate-900 capitalize">{getSelectedDateLabel(selectedDate)}</span>
+            </div>
+            <div className="space-y-1">
+              <span className="text-slate-400 block text-xs font-medium">Horario</span>
+              <span className="font-semibold text-slate-900">{selectedTime} hs</span>
+            </div>
+          </div>
+          
+          <div className="border-t border-slate-200 pt-4 flex justify-between items-center">
+            <div>
+              <span className="text-slate-900 font-bold block text-base">Total a pagar</span>
+              <span className="text-xs text-slate-500">El pago se procesará de forma segura</span>
+            </div>
+            <div className="text-right">
+              <span className="text-3xl font-black text-emerald-600">${APPOINTMENT_PRICE} USD</span>
+            </div>
           </div>
         </div>
       )}
