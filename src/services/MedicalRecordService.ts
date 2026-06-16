@@ -36,7 +36,7 @@ export const MedicalRecordService = {
     if (!response.ok) {
       if (response.status === 404) {
         // En caso de que no exista aún, devolvemos un objeto vacío para inicializar
-        return { weight: 0, height: 0, medicalHistory: "", medication: "" };
+        return { age: "", weight: 0, height: 0, medicalHistory: "", medication: "" };
       }
       await handleResponseError(response);
     }

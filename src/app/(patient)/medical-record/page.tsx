@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 
 export default function PatientMedicalRecordPage() {
+  const [age, setAge] = useState<string>("");
   const [weight, setWeight] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
   const [medicalHistory, setMedicalHistory] = useState<string>("");
@@ -22,6 +23,7 @@ export default function PatientMedicalRecordPage() {
       setLoading(true);
       const res = await getUserMedicalRecordAction();
       if (res.success && res.data) {
+        setAge(res.data.age || "");
         setWeight(res.data.weight || 0);
         setHeight(res.data.height || 0);
         setMedicalHistory(res.data.medicalHistory || "");
@@ -39,6 +41,12 @@ export default function PatientMedicalRecordPage() {
     setSaving(true);
     setMessage(null);
 
+    if (!age || age.trim() === "") {
+      setMessage({ type: "error", text: "Por favor, ingresa una edad válida." });
+      setSaving(false);
+      return;
+    }
+
     if (weight <= 0 || height <= 0) {
       setMessage({ type: "error", text: "Por favor, ingresa un peso y altura válidos." });
       setSaving(false);
@@ -46,6 +54,7 @@ export default function PatientMedicalRecordPage() {
     }
 
     const payload = {
+      age,
       weight,
       height,
       medicalHistory,
@@ -127,7 +136,28 @@ export default function PatientMedicalRecordPage() {
               )}
 
               {/* Medidas Fisiológicas */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div>
+                  <label htmlFor="age" className="block text-sm font-bold text-slate-700 mb-2">
+                    Edad (años)
+                  </label>
+                  <div className="relative rounded-xl shadow-xs">
+                    <input
+                      type="text"
+                      id="age"
+                      required
+                      maxLength={3}
+                      value={age}
+                      onChange={(e) => setAge(e.target.value.replace(/\D/g, ""))}
+                      className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all font-medium text-slate-800"
+                      placeholder="e.g. 28"
+                    />
+                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400 font-medium text-sm">
+                      años
+                    </div>
+                  </div>
+                </div>
+
                 <div>
                   <label htmlFor="weight" className="block text-sm font-bold text-slate-700 mb-2">
                     Peso Corporal (kg)

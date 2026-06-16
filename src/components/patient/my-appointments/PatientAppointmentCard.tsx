@@ -17,6 +17,7 @@ type Props = {
 export function PatientAppointmentCard({ appointment, isToday }: Props) {
   const [showDetails, setShowDetails] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   // Consideramos cancelado si está en alguno de estos 3 estados
   const isCancelled =
@@ -24,9 +25,10 @@ export function PatientAppointmentCard({ appointment, isToday }: Props) {
     appointment.appointmentStatus === "CANCELLED_REFUND" ||
     appointment.appointmentStatus === "CANCELLED_WITHOUT_REFUND";
 
-  // Determinar si el turno ya finalizó (estado COMPLETED o fecha en el pasado)
+  // Determinar si el turno ya finalizó (estado COMPLETED o fecha en el pasado, y no en curso)
   const isCompleted =
     !isCancelled &&
+    appointment.appointmentStatus !== "IN_PROGRESS" &&
     (appointment.appointmentStatus === "COMPLETED" ||
       appointment.appointmentStatus === "FINISHED" ||
       new Date(`${appointment.date}T${appointment.endTime || "23:59:59"}`) < new Date());
@@ -106,6 +108,11 @@ export function PatientAppointmentCard({ appointment, isToday }: Props) {
                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mr-1.5"></span>
                Finalizado
              </span>
+          ) : appointment.appointmentStatus === "IN_PROGRESS" ? (
+             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 animate-pulse">
+               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>
+               En Curso
+             </span>
           ) : (
             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
@@ -140,7 +147,7 @@ export function PatientAppointmentCard({ appointment, isToday }: Props) {
       </div>
 
       {/* Botón directo de reseña si finalizó */}
-      {isCompleted && (
+      {isCompleted && !appointment.hasReviewed && !reviewSubmitted && (
         <div className="mt-4 pt-4 border-t border-slate-100">
           <button
             onClick={() => setIsReviewModalOpen(true)}
@@ -160,10 +167,11 @@ export function PatientAppointmentCard({ appointment, isToday }: Props) {
         onClose={() => setIsReviewModalOpen(false)}
         doctorName={doctorName}
         appointmentId={appointment.id}
+        onSuccess={() => setReviewSubmitted(true)}
       />
 
-      {/* Botón directo de Videollamada si el turno está confirmado y no está colapsado */}
-      {!showDetails && appointment.appointmentStatus === "CONFIRMED" && appointment.meetingLink && (
+      {/* Botón directo de Videollamada si el turno está confirmado/en progreso y no está colapsado */}
+      {!showDetails && (appointment.appointmentStatus === "CONFIRMED" || appointment.appointmentStatus === "IN_PROGRESS") && appointment.meetingLink && (
         <div className="mt-4 pt-4 border-t border-slate-100">
           <a
             href={appointment.meetingLink}
@@ -182,7 +190,7 @@ export function PatientAppointmentCard({ appointment, isToday }: Props) {
       {/* Sección Detalle del Turno */}
       {showDetails && (
         <div className="mt-4 pt-4 border-t border-slate-100 space-y-3.5">
-          {appointment.appointmentStatus === "CONFIRMED" && appointment.meetingLink ? (
+          {(appointment.appointmentStatus === "CONFIRMED" || appointment.appointmentStatus === "IN_PROGRESS") && appointment.meetingLink ? (
             <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 space-y-3">
               <div className="flex items-center gap-2.5 text-emerald-800">
                 <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">

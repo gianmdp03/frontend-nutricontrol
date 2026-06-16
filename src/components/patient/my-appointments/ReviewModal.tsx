@@ -9,9 +9,10 @@ interface ReviewModalProps {
   onClose: () => void;
   doctorName: string;
   appointmentId: number;
+  onSuccess?: () => void;
 }
 
-export default function ReviewModal({ isOpen, onClose, doctorName, appointmentId }: ReviewModalProps) {
+export default function ReviewModal({ isOpen, onClose, doctorName, appointmentId, onSuccess }: ReviewModalProps) {
   const [score, setScore] = useState<number>(5);
   const [hoverScore, setHoverScore] = useState<number | null>(null);
   const [comment, setComment] = useState("");
@@ -30,15 +31,12 @@ export default function ReviewModal({ isOpen, onClose, doctorName, appointmentId
       return;
     }
 
-    if (!comment.trim()) {
-      setError("Por favor, escribe un comentario para tu reseña.");
-      setSubmitting(false);
-      return;
-    }
+
 
     const res = await addReviewAction({ appointmentId, score, comment });
     if (res.success) {
       setSuccess(true);
+      onSuccess?.();
       setTimeout(() => {
         setSuccess(false);
         setComment("");
@@ -181,12 +179,11 @@ export default function ReviewModal({ isOpen, onClose, doctorName, appointmentId
                 {/* Comentarios */}
                 <div>
                   <label htmlFor="review-comment" className="block text-sm font-bold text-slate-700 mb-2">
-                    Escribe tu opinión
+                    Escribe tu opinión <span className="text-xs text-slate-400 font-normal">(opcional)</span>
                   </label>
                   <textarea
                     id="review-comment"
                     rows={4}
-                    required
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-slate-800 leading-relaxed text-sm"

@@ -45,17 +45,63 @@ export default function PatientMedicalRecordModal({
     fetchRecord();
   }, [isOpen, patientId]);
 
-  const formatDate = (dateStr?: string) => {
-    if (!dateStr) return "N/A";
+  const formatDate = (dateVal?: any) => {
+    if (!dateVal) return "N/A";
     try {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString("es-ES", {
+      const parseDateSafe = (dateVal: any): Date => {
+        if (!dateVal) return new Date(0);
+        if (dateVal instanceof Date) return dateVal;
+        if (typeof dateVal === "string" && /^\d{1,2}\/\d{1,2}\/\d{4}/.test(dateVal)) {
+          const [datePart, timePart = ""] = dateVal.split(" ");
+          const [day, month, year] = datePart.split("/").map(Number);
+          const [hour = 0, minute = 0, second = 0] = timePart ? timePart.split(":").map(Number) : [];
+          return new Date(year, month - 1, day, hour, minute, second);
+        }
+        if (Array.isArray(dateVal)) {
+          const [year, month, day, hour = 0, minute = 0, second = 0] = dateVal;
+          return new Date(year, month - 1, day, hour, minute, second);
+        }
+        if (typeof dateVal === "object") {
+          const year = dateVal.year || dateVal.yearValue || 0;
+          const month = dateVal.monthValue || dateVal.month || 1;
+          const day = dateVal.dayOfMonth || dateVal.day || 1;
+          const hour = dateVal.hour || dateVal.hours || 0;
+          const minute = dateVal.minute || dateVal.minutes || 0;
+          const second = dateVal.second || dateVal.seconds || 0;
+          if (year > 0) {
+            let monthIndex = 0;
+            if (typeof month === "number") {
+              monthIndex = month - 1;
+            } else if (typeof month === "string") {
+              const months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+              const shortMonths = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+              const mLower = month.toLowerCase();
+              const idx = months.indexOf(mLower);
+              if (idx !== -1) monthIndex = idx;
+              else {
+                const idxShort = shortMonths.indexOf(mLower.substring(0, 3));
+                if (idxShort !== -1) monthIndex = idxShort;
+              }
+            }
+            return new Date(year, monthIndex, day, hour, minute, second);
+          }
+        }
+        const parsed = new Date(dateVal);
+        if (isNaN(parsed.getTime())) {
+          const fallback = new Date(`${dateVal}T12:00:00`);
+          return isNaN(fallback.getTime()) ? parsed : fallback;
+        }
+        return parsed;
+      };
+
+      const parsedDate = parseDateSafe(dateVal);
+      return parsedDate.toLocaleDateString("es-ES", {
         day: "numeric",
         month: "long",
         year: "numeric",
       });
     } catch {
-      return dateStr;
+      return String(dateVal);
     }
   };
 
@@ -117,7 +163,13 @@ export default function PatientMedicalRecordModal({
               <div className="space-y-6">
                 
                 {/* Métricas Corporales */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center">
+                    <span className="text-xs font-semibold text-slate-400 block uppercase">Edad</span>
+                    <span className="text-2xl font-black text-slate-800 mt-1 block">
+                      {record.age || "N/A"} <span className="text-sm font-bold text-slate-500">años</span>
+                    </span>
+                  </div>
                   <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center">
                     <span className="text-xs font-semibold text-slate-400 block uppercase">Peso Corporal</span>
                     <span className="text-2xl font-black text-slate-800 mt-1 block">

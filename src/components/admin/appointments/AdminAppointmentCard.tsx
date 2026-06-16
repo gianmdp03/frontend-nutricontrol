@@ -196,7 +196,7 @@ export function AdminAppointmentCard({ appointment, isToday }: Props) {
                     </button>
                   )}
 
-                  {!isCancelled && (
+                  {(appointment.appointmentStatus === "CONFIRMED" || appointment.appointmentStatus === "PENDING") && (
                     <button
                       onClick={handleCancel}
                       disabled={isPending}
@@ -228,9 +228,24 @@ export function AdminAppointmentCard({ appointment, isToday }: Props) {
       <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
         <div className="flex items-center gap-2">
           {isCancelled ? (
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
               <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span>
               Cancelado
+            </span>
+          ) : appointment.appointmentStatus === "COMPLETED" || appointment.appointmentStatus === "FINISHED" ? (
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1.5"></span>
+              Finalizado
+            </span>
+          ) : appointment.appointmentStatus === "IN_PROGRESS" ? (
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 animate-pulse">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>
+              En Curso
+            </span>
+          ) : appointment.appointmentStatus === "USER_DIDNT_COME" ? (
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span>
+              Ausente
             </span>
           ) : (
             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">

@@ -27,6 +27,13 @@ export default function AdminAppointmentDetailClient({ appointment: initialAppoi
   const [isNutritionalPlanOpen, setIsNutritionalPlanOpen] = useState(false);
   const [isMedicalHistoryOpen, setIsMedicalHistoryOpen] = useState(false);
 
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  const todayStr = `${year}-${month}-${day}`;
+  const isFuture = appointment.date > todayStr;
+
   const isCancelled =
     appointment.appointmentStatus === "CANCELLED" ||
     appointment.appointmentStatus === "CANCELLED_REFUND" ||
@@ -258,8 +265,11 @@ export default function AdminAppointmentDetailClient({ appointment: initialAppoi
                     {appointment.appointmentStatus === "CONFIRMED" && (
                       <button
                         onClick={handleStart}
-                        disabled={loading}
-                        className="inline-flex justify-center items-center gap-2 px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg active:scale-98 disabled:opacity-70 cursor-pointer"
+                        disabled={/*loading || isFuture*/ false}
+                        className={`inline-flex justify-center items-center gap-2 px-6 py-3 font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${
+                          isFuture ? "bg-slate-300 text-slate-500 hover:bg-slate-300 shadow-none" : "bg-rose-500 hover:bg-rose-600 text-white"
+                        }`}
+                        title={isFuture ? "No se puede iniciar un turno para una fecha futura" : undefined}
                       >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />

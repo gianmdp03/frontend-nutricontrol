@@ -30,4 +30,5 @@ export interface Appointment {
     | "USER_DIDNT_COME";
   meetingLink?: string;
   appointmentType: AppointmentType;
+  hasReviewed?: boolean;
 }

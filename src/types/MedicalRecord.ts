@@ -1,5 +1,6 @@
 export interface MedicalRecordDetailDTO {
   id?: number;
+  age: string;
   weight: number;
   height: number;
   medicalHistory?: string;
@@ -8,6 +9,7 @@ export interface MedicalRecordDetailDTO {
 }
 
 export interface MedicalRecordRequestDTO {
+  age: string;
   weight: number;
   height: number;
   medicalHistory?: string;
