@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
     <footer className="bg-gray-50 py-6 border-t border-gray-200 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-start sm:items-center justify-center gap-3 text-center sm:text-left">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center sm:items-start justify-center gap-3 text-center sm:text-left">
         <div className="text-rose-500 shrink-0 mt-0.5 sm:mt-0">
           <svg
             className="w-5 h-5"

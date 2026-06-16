@@ -102,7 +102,7 @@ export default function PatientMedicalRecordPage() {
               <p className="text-slate-500 font-medium text-sm">Cargando tu información médica...</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm space-y-6">
+            <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-4 sm:p-8 border border-slate-100 shadow-sm space-y-6">
               
               {/* Alertas */}
               {message && (
@@ -209,7 +209,7 @@ export default function PatientMedicalRecordPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-3 bg-rose-500 hover:bg-rose-600 disabled:bg-rose-300 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center gap-2"
+                  className="w-full sm:w-auto px-6 py-3 bg-rose-500 hover:bg-rose-600 disabled:bg-rose-300 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
                   {saving && <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>}
                   {saving ? "Guardando cambios..." : "Guardar Ficha Médica"}

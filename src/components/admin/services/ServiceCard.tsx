@@ -27,7 +27,7 @@ const ServiceCard = ({ name, description, children}: Props) => {
         </svg>
       </div>
       <h4 className="text-lg font-bold text-slate-800 mb-2">{name}</h4>
-      <p className="text-sm text-gray-500 mb-4 h-10">{description}</p>
+      <p className="text-sm text-gray-500 mb-4 min-h-[2.5rem] md:min-h-[3rem] line-clamp-2 md:line-clamp-3">{description}</p>
       {children}
     </div>
   );

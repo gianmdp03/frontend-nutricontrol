@@ -3,8 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import AdminNavbar from "@/components/layout/AdminNavbar";
 import ProfileMenu from "@/components/layout/ProfileMenu";
 import NotificationBell from "@/components/layout/NotificationBell";
-import Logo from "@/components/layout/Logo";
-import Link from "next/link";
+import AdminSidebarToggle from "@/components/layout/AdminSidebarToggle";
 import React from "react";
 
 export default async function AdminLayout({
@@ -25,10 +24,8 @@ export default async function AdminLayout({
         {/* Cabecera superior moderna */}
         <header className="h-16 bg-white border-b border-slate-200/80 px-6 sm:px-8 flex items-center justify-between shrink-0 sticky top-0 z-40">
           {/* Logo en versión móvil (cuando se oculta la sidebar) */}
-          <div className="md:hidden">
-            <Link href="/admin" className="block w-fit hover:scale-[1.02] hover:opacity-90 active:scale-98 transition-all duration-200">
-              <Logo white={false} />
-            </Link>
+          <div className="md:hidden flex items-center gap-2">
+            <AdminSidebarToggle />
           </div>
           <div className="hidden md:block">
             {/* Espacio vacío para balancear el diseño en escritorio */}

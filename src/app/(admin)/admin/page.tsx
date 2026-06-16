@@ -135,9 +135,9 @@ export default async function AdminDashboard() {
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 min-h-screen">
       {/* Banner de Bienvenida */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-rose-500 to-rose-600 rounded-3xl p-8 text-white shadow-lg">
+      <div className="relative overflow-hidden bg-gradient-to-r from-rose-500 to-rose-600 rounded-3xl p-6 md:p-8 text-white shadow-lg">
         <div className="absolute right-0 bottom-0 translate-x-10 translate-y-10 opacity-15 pointer-events-none">
-          <svg className="w-80 h-80" fill="currentColor" viewBox="0 0 24 24">
+          <svg className="w-48 h-48 md:w-80 md:h-80" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
           </svg>
         </div>
@@ -317,7 +317,7 @@ export default async function AdminDashboard() {
         </div>
 
         {upcomingSortedAppointments.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {upcomingSortedAppointments.map((app) => {
               const isTodayApp = app.date === todayStr;
               return (

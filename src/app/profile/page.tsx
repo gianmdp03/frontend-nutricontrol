@@ -82,23 +82,23 @@ export default async function ProfilePage() {
               </div>
             </div>
             
-            <div className="px-8 pb-8 relative">
-              <div className="relative flex justify-between items-end -mt-12 mb-6">
-                <div className="h-24 w-24 rounded-full bg-white p-1.5 shadow-md">
+            <div className="px-4 sm:px-8 pb-6 sm:pb-8 relative">
+              <div className="relative flex flex-col sm:flex-row items-center sm:items-end justify-between -mt-12 mb-6 gap-4 sm:gap-0">
+                <div className="h-24 w-24 rounded-full bg-white p-1.5 shadow-md shrink-0">
                   <div className="h-full w-full rounded-full bg-linear-to-tr from-rose-500 to-orange-400 flex items-center justify-center text-white text-3xl font-bold">
                     {initials}
                   </div>
                 </div>
                 <div>
-                  <button disabled className="px-4 py-2 bg-slate-50 border border-slate-200 text-slate-400 text-sm font-medium rounded-lg cursor-not-allowed transition-colors">
+                  <button disabled className="px-4 py-2 bg-slate-50 border border-slate-200 text-slate-400 text-sm font-medium rounded-lg cursor-not-allowed transition-colors w-full sm:w-auto">
                     Editar Perfil (Pronto)
                   </button>
                 </div>
               </div>
               
-              <div>
+              <div className="text-center sm:text-left">
                 <h1 className="text-3xl font-bold text-slate-900">{userName}</h1>
-                <div className="flex flex-wrap items-center gap-4 mt-2">
+                <div className="flex flex-wrap justify-center sm:justify-start items-center gap-4 mt-2">
                   <p className="text-slate-500 flex items-center gap-1.5">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
