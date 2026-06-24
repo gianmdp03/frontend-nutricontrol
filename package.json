@@ -11,6 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@stomp/stompjs": "^7.3.0",
+    "countries-and-timezones": "^3.9.0",
     "daisyui": "^5.5.19",
     "flatpickr": "^4.6.13",
     "framer-motion": "^12.38.0",
@@ -21,6 +22,8 @@
     "react-dom": "19.2.4",
     "react-flatpickr": "^4.0.11",
     "react-hook-form": "^7.74.0",
+    "react-select": "^5.10.2",
+    "react-timezone-select": "^3.3.3",
     "sockjs-client": "^1.6.1",
     "zod": "^4.3.6"
   },

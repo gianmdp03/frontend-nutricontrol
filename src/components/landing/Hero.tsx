@@ -136,6 +136,14 @@ const Hero = ({ isAdmin }: Props) => {
               >
                 Ver servicios
               </Link>
+              <Link
+                href="https://api.whatsapp.com/send?phone=18494039614&text=Hola"
+                className="bg-white border-2 border-gray-200 hover:border-gray-300 text-gray-700 px-6 py-3 rounded-md font-medium transition"
+                target="_blank"
+                rel="noopener"
+              >
+                Soporte
+              </Link>
             </div>
           )}
         </div>
