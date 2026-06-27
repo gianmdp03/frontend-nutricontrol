@@ -4,6 +4,13 @@ import { redirect } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/BottomComponent";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Mi Perfil",
+  description: "Edita tu información de perfil, configura tu consultorio y descarga tus recetas, certificados o planes nutricionales personalizados.",
+};
+
 import AdminPresetForm from "@/components/admin/presets/AdminPresetForm";
 import { AdminPresetService } from "@/services/AdminPresetService";
 import PatientDocumentsView from "@/components/patient/documents/PatientDocumentsView";

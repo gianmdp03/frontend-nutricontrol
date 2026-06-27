@@ -5,6 +5,16 @@ import ProfileMenu from "@/components/layout/ProfileMenu";
 import NotificationBell from "@/components/layout/NotificationBell";
 import AdminSidebarToggle from "@/components/layout/AdminSidebarToggle";
 import React from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Panel de Administración",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 
 export default async function AdminLayout({
   children,

@@ -2,6 +2,12 @@ import AppointmentBooking from "@/components/patient/booking/AppointmentBooking"
 import { AppointmentService } from "@/services/AppointmentService";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Agendar Turno",
+  description: "Agenda una consulta médica o nutricional virtual con la Dra. Zully Cepeda. Elige tu fecha, hora y tipo de consulta de forma 100% digital.",
+};
 
 export default async function BookingPage() {
   const session = await getServerSession(authOptions);

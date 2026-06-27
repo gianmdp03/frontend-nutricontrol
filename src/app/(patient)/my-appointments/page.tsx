@@ -4,6 +4,13 @@ import { AppointmentService } from "@/services/AppointmentService";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { Appointment } from "@/types/Appointment";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Mis Turnos",
+  description: "Visualiza tus turnos agendados, cancela citas de forma online y accede a tus consultas virtuales programadas.",
+};
+
 
 export const formatDate = (dateStr: string) => {
   const options: Intl.DateTimeFormatOptions = {
