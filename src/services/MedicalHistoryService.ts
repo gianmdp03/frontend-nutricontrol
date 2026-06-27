@@ -55,6 +55,7 @@ export const MedicalHistoryService = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
 
     if (!response.ok) {
@@ -69,6 +70,7 @@ export const MedicalHistoryService = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
 
     if (!response.ok) {
@@ -117,6 +119,7 @@ export const MedicalHistoryService = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
 
     if (!response.ok) {

@@ -40,6 +40,7 @@ export const ScheduleExceptionService = {
   get: async (token: string): Promise<ScheduleExceptionDetailDTO[]> => {
     const response = await fetch(`${API_URL}/schedule-exceptions`, {
       headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
     });
     if (!response.ok) await handleResponseError(response);
     const data = await response.json();
@@ -52,6 +53,7 @@ export const ScheduleExceptionService = {
   ): Promise<ScheduleExceptionDetailDTO> => {
     const response = await fetch(`${API_URL}/schedule-exceptions/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
     });
     if (!response.ok) await handleResponseError(response);
     return response.json();

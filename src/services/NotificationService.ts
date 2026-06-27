@@ -24,6 +24,7 @@ export const NotificationService = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        cache: "no-store",
       },
     );
 

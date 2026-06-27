@@ -37,14 +37,17 @@ export const ServiceService = {
   get: async (): Promise<ServiceDetailDTO[]> => {
     const response = await fetch(`${API_URL}/services/public`, {
       next: { tags: ["services-list"] },
-      cache: "no-store",
+      cache: "force-cache",
     });
     if (!response.ok) await handleResponseError(response);
     const data = await response.json();
     return data.content || [];
   },
   getById: async (id: string): Promise<ServiceDetailDTO> => {
-    const response = await fetch(`${API_URL}/services/public/${id}`);
+    const response = await fetch(`${API_URL}/services/public/${id}`, {
+      next: { tags: ["services-list", `service-${id}`] },
+      cache: "force-cache",
+    });
     if (!response.ok) await handleResponseError(response);
     const data = await response.json();
     return data;

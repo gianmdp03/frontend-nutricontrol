@@ -44,6 +44,7 @@ export const ScheduleRuleService = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
     if (!response.ok) await handleResponseError(response);
     const data = await response.json();
@@ -57,6 +58,7 @@ export const ScheduleRuleService = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
     if (!response.ok) await handleResponseError(response);
     return response.json();

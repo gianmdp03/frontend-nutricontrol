@@ -49,6 +49,7 @@ export const MedicalCertificateService = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
     if (!response.ok) {
       await handleResponseError(response);
@@ -62,6 +63,7 @@ export const MedicalCertificateService = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
 
     if (!response.ok) {

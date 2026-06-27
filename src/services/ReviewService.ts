@@ -46,6 +46,7 @@ export const ReviewService = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        cache: "no-store",
       },
     );
 

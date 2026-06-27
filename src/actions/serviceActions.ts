@@ -1,7 +1,7 @@
 "use server";
 
 import { ServiceFormValues, serviceSchema } from "@/schemas/ServiceSchema";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { ServiceService } from "@/services/ServiceService";
 import { ApiError } from "@/utils/ApiError";
@@ -9,6 +9,7 @@ import { ApiError } from "@/utils/ApiError";
 export async function deleteServiceAction(id: string, token: string) {
   try {
     await ServiceService.delete(id, token);
+    updateTag("services-list");
     revalidatePath("/admin/services");
     return { success: true };
   } catch (error) {
@@ -31,6 +32,7 @@ export async function createServiceAction(data: ServiceFormValues, token: string
     return { success: false, message: "Hubo un problema de conexión con el servidor", error: "Hubo un problema de conexión con el servidor" };
   }
 
+  updateTag("services-list");
   revalidatePath("/admin/services");
   redirect("/admin/services");
 }
@@ -46,6 +48,7 @@ export async function updateServiceAction(id: string, data: ServiceFormValues, t
     return { success: false, message: "Hubo un problema de conexión con el servidor", error: "Hubo un problema de conexión con el servidor" };
   }
 
+  updateTag("services-list");
   revalidatePath("/admin/services");
   redirect("/admin/services");
 }

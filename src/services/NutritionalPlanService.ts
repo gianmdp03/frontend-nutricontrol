@@ -49,6 +49,7 @@ export const NutritionalPlanService = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
 
     if (!response.ok) {
@@ -67,6 +68,7 @@ export const NutritionalPlanService = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
 
     if (!response.ok) {
@@ -82,6 +84,7 @@ export const NutritionalPlanService = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
 
     if (!response.ok) {

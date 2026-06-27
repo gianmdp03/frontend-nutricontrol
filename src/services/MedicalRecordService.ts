@@ -31,6 +31,7 @@ export const MedicalRecordService = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
 
     if (!response.ok) {
@@ -53,6 +54,7 @@ export const MedicalRecordService = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
 
     if (!response.ok) {
