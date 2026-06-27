@@ -35,6 +35,7 @@ export const authOptions: NextAuthOptions = {
               id: data.dto.id.toString(),
               name: data.dto.name ? `${data.dto.name} ${data.dto.lastname || ""}`.trim() : undefined,
               email: data.dto.email || credentials?.email,
+              username: data.dto.username,
               backendToken: data.token,
               role: data.dto.role,
               timezone: data.dto.timezone,
@@ -92,6 +93,7 @@ export const authOptions: NextAuthOptions = {
         token.backendToken = user.backendToken;
         token.role = user.role;
         token.timezone = user.timezone;
+        token.username = user.username;
       }
       return token;
     },
@@ -101,6 +103,7 @@ export const authOptions: NextAuthOptions = {
         session.user.backendToken = token.backendToken as string;
         session.user.role = token.role as string;
         session.user.timezone = token.timezone as string;
+        session.user.username = token.username as string;
       }
       return session;
     },

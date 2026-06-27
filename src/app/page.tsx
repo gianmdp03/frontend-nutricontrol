@@ -10,12 +10,31 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import BottomComponent from "@/components/layout/BottomComponent";
 import Footer from "@/components/layout/Footer";
+import { getUserMedicalRecordAction } from "@/actions/medicalRecordActions";
+import MedicalRecordBanner from "@/components/patient/MedicalRecordBanner";
 
 export default async function Home() {
-  const isAdmin =
-    (await getServerSession(authOptions))?.user?.role === "ROLE_ADMIN";
+  const session = await getServerSession(authOptions);
+  const isAdmin = session?.user?.role === "ROLE_ADMIN";
+
+  let showMedicalRecordBanner = false;
+  if (session && !isAdmin) {
+    try {
+      const res = await getUserMedicalRecordAction();
+      if (res.success && res.data) {
+        const { age, weight, height } = res.data;
+        showMedicalRecordBanner = !age || age.trim() === "" || weight <= 0 || height <= 0;
+      } else {
+        showMedicalRecordBanner = true;
+      }
+    } catch (error) {
+      console.error("Error checking medical record status in Home:", error);
+    }
+  }
+
   return (
     <>
+      {showMedicalRecordBanner && <MedicalRecordBanner />}
       <Navbar variant="HOME" />
       <ScrollToTop />
       <BackgroundGlow />
@@ -28,3 +47,4 @@ export default async function Home() {
     </>
   );
 }
+

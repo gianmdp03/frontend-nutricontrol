@@ -21,7 +21,7 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  const { name, email, role } = session.user;
+  const { name, email, role, username } = session.user;
   const token = session.user.backendToken || "";
   let presetData = undefined;
   let prescriptions: PrescriptionDetailDTO[] = [];
@@ -121,6 +121,11 @@ export default async function ProfilePage() {
                 <h1 className="text-3xl font-bold text-slate-900">
                   {userName}
                 </h1>
+                {username && (
+                  <p className="text-sm font-semibold text-slate-400 mt-0.5">
+                    @{username}
+                  </p>
+                )}
                 <div className="flex flex-wrap justify-center sm:justify-start items-center gap-4 mt-2">
                   <p className="text-slate-500 flex items-center gap-1.5">
                     <svg

@@ -12,6 +12,7 @@ declare module "next-auth" {
       email: string;
       name?: string;
       lastname?: string;
+      username?: string;
       role?: string;
       backendToken: string;
       timezone?: string;
@@ -21,6 +22,7 @@ declare module "next-auth" {
   interface User {
     id: string;
     email: string;
+    username?: string;
     role?: string;
     backendToken?: string;
     timezone?: string;
@@ -32,5 +34,6 @@ declare module "next-auth/jwt" {
     role?: string;
     backendToken?: string;
     timezone?: string;
+    username?: string;
   }
 }
