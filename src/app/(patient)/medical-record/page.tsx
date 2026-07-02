@@ -9,10 +9,47 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/BottomComponent";
 import Link from "next/link";
 
+// Helper functions for unit conversions
+const kgToLbs = (kg: number): string => {
+  if (!kg || kg <= 0) return "";
+  const lbs = kg * 2.20462;
+  return (Math.round(lbs * 10) / 10).toString();
+};
+
+const lbsToKg = (lbs: number): string => {
+  if (!lbs || lbs <= 0) return "";
+  const kg = lbs / 2.20462;
+  return (Math.round(kg * 10) / 10).toString();
+};
+
+const cmToFtIn = (cm: number): { ft: string; in: string } => {
+  if (!cm || cm <= 0) return { ft: "", in: "" };
+  const totalInches = cm / 2.54;
+  let ft = Math.floor(totalInches / 12);
+  let inch = Math.round((totalInches % 12) * 10) / 10;
+  if (inch >= 12) {
+    ft += 1;
+    inch = Math.round((inch - 12) * 10) / 10;
+  }
+  return { ft: ft.toString(), in: inch.toString() };
+};
+
+const ftInToCm = (ftStr: string, inStr: string): string => {
+  const ft = parseFloat(ftStr) || 0;
+  const inch = parseFloat(inStr) || 0;
+  if (ft === 0 && inch === 0) return "";
+  const totalInches = ft * 12 + inch;
+  const cm = totalInches * 2.54;
+  return (Math.round(cm * 10) / 10).toString();
+};
+
 export default function PatientMedicalRecordPage() {
   const [age, setAge] = useState<string>("");
-  const [weight, setWeight] = useState<number>(0);
-  const [height, setHeight] = useState<number>(0);
+  const [weightKg, setWeightKg] = useState<string>("");
+  const [weightLbs, setWeightLbs] = useState<string>("");
+  const [heightCm, setHeightCm] = useState<string>("");
+  const [heightFt, setHeightFt] = useState<string>("");
+  const [heightIn, setHeightIn] = useState<string>("");
   const [medicalHistory, setMedicalHistory] = useState<string>("");
   const [medication, setMedication] = useState<string>("");
 
@@ -30,8 +67,28 @@ export default function PatientMedicalRecordPage() {
       const res = await getUserMedicalRecordAction();
       if (res.success && res.data) {
         setAge(res.data.age || "");
-        setWeight(res.data.weight || 0);
-        setHeight(res.data.height || 0);
+        
+        const wKg = res.data.weight || 0;
+        if (wKg > 0) {
+          setWeightKg(wKg.toString());
+          setWeightLbs(kgToLbs(wKg));
+        } else {
+          setWeightKg("");
+          setWeightLbs("");
+        }
+
+        const hCm = res.data.height || 0;
+        if (hCm > 0) {
+          setHeightCm(hCm.toString());
+          const { ft, in: inch } = cmToFtIn(hCm);
+          setHeightFt(ft);
+          setHeightIn(inch);
+        } else {
+          setHeightCm("");
+          setHeightFt("");
+          setHeightIn("");
+        }
+
         setMedicalHistory(res.data.medicalHistory || "");
         setMedication(res.data.medication || "");
       } else if (res.error) {
@@ -41,6 +98,56 @@ export default function PatientMedicalRecordPage() {
     }
     loadRecord();
   }, []);
+
+  const handleWeightKgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setWeightKg(val);
+    const num = parseFloat(val);
+    if (!isNaN(num) && num > 0) {
+      setWeightLbs(kgToLbs(num));
+    } else {
+      setWeightLbs("");
+    }
+  };
+
+  const handleWeightLbsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setWeightLbs(val);
+    const num = parseFloat(val);
+    if (!isNaN(num) && num > 0) {
+      setWeightKg(lbsToKg(num));
+    } else {
+      setWeightKg("");
+    }
+  };
+
+  const handleHeightCmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setHeightCm(val);
+    const num = parseFloat(val);
+    if (!isNaN(num) && num > 0) {
+      const { ft, in: inch } = cmToFtIn(num);
+      setHeightFt(ft);
+      setHeightIn(inch);
+    } else {
+      setHeightFt("");
+      setHeightIn("");
+    }
+  };
+
+  const handleHeightFtChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setHeightFt(val);
+    const newCm = ftInToCm(val, heightIn);
+    setHeightCm(newCm);
+  };
+
+  const handleHeightInChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setHeightIn(val);
+    const newCm = ftInToCm(heightFt, val);
+    setHeightCm(newCm);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +163,10 @@ export default function PatientMedicalRecordPage() {
       return;
     }
 
-    if (weight <= 0 || height <= 0) {
+    const weightNum = parseFloat(weightKg) || 0;
+    const heightNum = parseFloat(heightCm) || 0;
+
+    if (weightNum <= 0 || heightNum <= 0) {
       setMessage({
         type: "error",
         text: "Por favor, ingresa un peso y altura válidos.",
@@ -67,8 +177,8 @@ export default function PatientMedicalRecordPage() {
 
     const payload = {
       age,
-      weight,
-      height,
+      weight: weightNum,
+      height: heightNum,
       medicalHistory,
       medication,
     };
@@ -194,7 +304,7 @@ export default function PatientMedicalRecordPage() {
               )}
 
               {/* Medidas Fisiológicas */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                   <label
                     htmlFor="age"
@@ -221,55 +331,128 @@ export default function PatientMedicalRecordPage() {
                   </div>
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="weight"
-                    className="block text-sm font-bold text-slate-700 mb-2"
-                  >
-                    Peso Corporal (kg)
-                  </label>
-                  <div className="relative rounded-xl shadow-xs">
-                    <input
-                      type="number"
-                      step="0.1"
-                      id="weight"
-                      required
-                      min="1"
-                      max="400"
-                      value={weight || ""}
-                      onChange={(e) =>
-                        setWeight(parseFloat(e.target.value) || 0)
-                      }
-                      className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all font-medium text-slate-800"
-                      placeholder="e.g. 70.5"
-                    />
-                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400 font-medium text-sm">
-                      kg
+                {/* Peso Corporal (kg & lb) */}
+                <div className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor="weightKg"
+                      className="block text-sm font-bold text-slate-700 mb-2"
+                    >
+                      Peso Corporal (kg)
+                    </label>
+                    <div className="relative rounded-xl shadow-xs">
+                      <input
+                        type="number"
+                        step="0.1"
+                        id="weightKg"
+                        required
+                        min="1"
+                        max="400"
+                        value={weightKg}
+                        onChange={handleWeightKgChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all font-medium text-slate-800"
+                        placeholder="e.g. 70.5"
+                      />
+                      <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400 font-medium text-sm">
+                        kg
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="weightLbs"
+                      className="block text-sm font-bold text-slate-700 mb-2"
+                    >
+                      Peso Corporal (lb)
+                    </label>
+                    <div className="relative rounded-xl shadow-xs">
+                      <input
+                        type="number"
+                        step="0.1"
+                        id="weightLbs"
+                        required
+                        min="2"
+                        max="900"
+                        value={weightLbs}
+                        onChange={handleWeightLbsChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all font-medium text-slate-800"
+                        placeholder="e.g. 155.4"
+                      />
+                      <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400 font-medium text-sm">
+                        lb
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="height"
-                    className="block text-sm font-bold text-slate-700 mb-2"
-                  >
-                    Altura (cm)
-                  </label>
-                  <div className="relative rounded-xl shadow-xs">
-                    <input
-                      type="number"
-                      id="height"
-                      required
-                      min="10"
-                      max="300"
-                      value={height || ""}
-                      onChange={(e) => setHeight(parseInt(e.target.value) || 0)}
-                      className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all font-medium text-slate-800"
-                      placeholder="e.g. 175"
-                    />
-                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400 font-medium text-sm">
-                      cm
+                {/* Altura (cm & ft/in) */}
+                <div className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor="heightCm"
+                      className="block text-sm font-bold text-slate-700 mb-2"
+                    >
+                      Altura (cm)
+                    </label>
+                    <div className="relative rounded-xl shadow-xs">
+                      <input
+                        type="number"
+                        id="heightCm"
+                        required
+                        min="10"
+                        max="300"
+                        value={heightCm}
+                        onChange={handleHeightCmChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all font-medium text-slate-800"
+                        placeholder="e.g. 175"
+                      />
+                      <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400 font-medium text-sm">
+                        cm
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      className="block text-sm font-bold text-slate-700 mb-2"
+                    >
+                      Altura (sistema inglés)
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="relative rounded-xl shadow-xs">
+                        <input
+                          type="number"
+                          id="heightFt"
+                          required
+                          min="0"
+                          max="9"
+                          value={heightFt}
+                          onChange={handleHeightFtChange}
+                          className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all font-medium text-slate-800"
+                          placeholder="Pies"
+                        />
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400 font-medium text-sm">
+                          ft
+                        </div>
+                      </div>
+                      <div className="relative rounded-xl shadow-xs">
+                        <input
+                          type="number"
+                          step="0.1"
+                          id="heightIn"
+                          required
+                          min="0"
+                          max="11.9"
+                          value={heightIn}
+                          onChange={handleHeightInChange}
+                          className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all font-medium text-slate-800"
+                          placeholder="Pulg."
+                        />
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400 font-medium text-sm">
+                          in
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

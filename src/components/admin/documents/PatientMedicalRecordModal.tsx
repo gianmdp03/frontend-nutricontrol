@@ -5,6 +5,25 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getPatientMedicalRecordAction } from "@/actions/medicalRecordActions";
 import { MedicalRecordDetailDTO } from "@/types/MedicalRecord";
 
+// Helper functions for unit conversions
+const kgToLbs = (kg: number): string => {
+  if (!kg || kg <= 0) return "";
+  const lbs = kg * 2.20462;
+  return (Math.round(lbs * 10) / 10).toString();
+};
+
+const cmToFtInString = (cm: number): string => {
+  if (!cm || cm <= 0) return "";
+  const totalInches = cm / 2.54;
+  let ft = Math.floor(totalInches / 12);
+  let inch = Math.round((totalInches % 12) * 10) / 10;
+  if (inch >= 12) {
+    ft += 1;
+    inch = Math.round((inch - 12) * 10) / 10;
+  }
+  return `${ft} ft ${inch} in`;
+};
+
 interface PatientMedicalRecordModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -164,23 +183,39 @@ export default function PatientMedicalRecordModal({
                 
                 {/* Métricas Corporales */}
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center">
-                    <span className="text-xs font-semibold text-slate-400 block uppercase">Edad</span>
-                    <span className="text-2xl font-black text-slate-800 mt-1 block">
-                      {record.age || "N/A"} <span className="text-sm font-bold text-slate-500">años</span>
-                    </span>
+                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center flex flex-col justify-between">
+                    <div>
+                      <span className="text-xs font-semibold text-slate-400 block uppercase">Edad</span>
+                      <span className="text-2xl font-black text-slate-800 mt-1 block">
+                        {record.age || "N/A"} <span className="text-sm font-bold text-slate-500">años</span>
+                      </span>
+                    </div>
                   </div>
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center">
-                    <span className="text-xs font-semibold text-slate-400 block uppercase">Peso Corporal</span>
-                    <span className="text-2xl font-black text-slate-800 mt-1 block">
-                      {record.weight} <span className="text-sm font-bold text-slate-500">kg</span>
-                    </span>
+                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center flex flex-col justify-between">
+                    <div>
+                      <span className="text-xs font-semibold text-slate-400 block uppercase">Peso Corporal</span>
+                      <span className="text-2xl font-black text-slate-800 mt-1 block">
+                        {record.weight} <span className="text-sm font-bold text-slate-500">kg</span>
+                      </span>
+                    </div>
+                    {record.weight > 0 && (
+                      <span className="text-xs font-medium text-slate-500 mt-1 block border-t border-slate-200/60 pt-1">
+                        {kgToLbs(record.weight)} lb
+                      </span>
+                    )}
                   </div>
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center">
-                    <span className="text-xs font-semibold text-slate-400 block uppercase">Altura</span>
-                    <span className="text-2xl font-black text-slate-800 mt-1 block">
-                      {record.height} <span className="text-sm font-bold text-slate-500">cm</span>
-                    </span>
+                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center flex flex-col justify-between">
+                    <div>
+                      <span className="text-xs font-semibold text-slate-400 block uppercase">Altura</span>
+                      <span className="text-2xl font-black text-slate-800 mt-1 block">
+                        {record.height} <span className="text-sm font-bold text-slate-500">cm</span>
+                      </span>
+                    </div>
+                    {record.height > 0 && (
+                      <span className="text-xs font-medium text-slate-500 mt-1 block border-t border-slate-200/60 pt-1">
+                        {cmToFtInString(record.height)}
+                      </span>
+                    )}
                   </div>
                 </div>
 
